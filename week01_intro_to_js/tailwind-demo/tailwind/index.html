@@ -3,13 +3,22 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Abstract</title>
-        <link rel="stylesheet" href="styles.css" />
-        <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+        <title>Abstract - Tailwind Edition!</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <style type="text/tailwindcss">
+            @layer components {
+                .service {
+                    @apply flex gap-4;
+                    img {
+                        @apply h-1/4;
+                    }
+                }
+            }
+        </style>
     </head>
     <body>
-        <header>
-            <div class="header-start">
+        <header class="flex bg-black text-white justify-around py-4">
+            <div class="flex gap-2">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -24,17 +33,19 @@
                 </svg>
                 <h1>Abstract | Help Center</h1>
             </div>
-            <div class="header-end">
+            <div class="flex gap-4">
                 <button>Submit a request</button>
                 <button>Sign in</button>
             </div>
         </header>
         <main>
-            <section class="hero">
-                <h2>How can we help?</h2>
-                <input type="text" />
+            <section
+                class="flex flex-col justify-center items-center gap-4 min-h-[30vh] bg-[#dadbf1]"
+            >
+                <h2 class="text-5xl">How can we help?</h2>
+                <input placeholder="Search" type="text" class="w-1/2 p-2" />
             </section>
-            <section class="services">
+            <section class="grid grid-cols-2 grid-rows-3 gap-8 p-12">
                 <div class="service">
                     <img
                         src="https://help.abstract.com/hc/theming_assets/01HZH4D4GACXWCRKK6JHQ730XD"
@@ -115,5 +126,53 @@
                 </div>
             </section>
         </main>
+        <footer class="flex bg-black text-white justify-around py-8">
+            <div class="flex gap-6">
+                <nav>
+                    <h3 class="font-semibold text-xl">Abstract</h3>
+                    <ul>
+                        <li>Start trial</li>
+                        <li>Pricing</li>
+                        <li>Download</li>
+                    </ul>
+                </nav>
+                <nav>
+                    <h3 class="font-semibold text-xl">Resources</h3>
+                    <ul>
+                        <li>Blog</li>
+                        <li>Help Center</li>
+                        <li>Release Notes</li>
+                        <li>Status</li>
+                    </ul>
+                </nav>
+                <nav>
+                    <h3 class="font-semibold text-xl">Community</h3>
+                    <ul>
+                        <li>Twitter</li>
+                        <li>LinkedIn</li>
+                        <li>Facebook</li>
+                        <li>Dribble</li>
+                        <li>Podcast</li>
+                    </ul>
+                </nav>
+                <nav>
+                    <h3 class="font-semibold text-xl">Company</h3>
+                    <ul>
+                        <li>About Us</li>
+                        <li>Careers</li>
+                        <li>Legal</li>
+                        <li>
+                            <h4>Contact Us</h4>
+                            <p>info@abstract.com</p>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="self-end">
+                <p>© Copyright 2024</p>
+                <p>Abstract Studio Design, Inc.</p>
+                <p>All rights reserved</p>
+            </div>
+        </footer>
     </body>
 </html>
