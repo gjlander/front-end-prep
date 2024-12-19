@@ -1,5 +1,42 @@
 # Intro to JavaScript
 
+## Key points for Exercises
+
+### Variables
+
+-   Declaration with var, let, and const
+-   Reassigning values
+-   Printing variables
+
+### Arithmetic
+
+-   Addition, subtraction, multiplication and division with numbers and mixed types
+-   Modulus operator, increment, shorthand
+
+### Comparisons
+
+-   Simple and strict equality
+-   Greater/less than
+
+### Conditionals
+
+-   if/else
+-   if/else if
+-   switch
+
+### Functions
+
+-   Three ways of writing a function
+-   Calling a function
+-   Parameters
+
+## Scope
+
+-   Global and block scope
+-   var is weird
+
+# Lesson Plan
+
 -   start with empty JS file
 
 ## Getting started
@@ -88,22 +125,24 @@ console.log(20 + 5);
 -   Show example with DnD classes logging a catch phrase
 
 ```js
-let day = 3; // Change the value of day
-switch (day) {
-    case 1:
-        console.log('Monday');
+let characterClass = 'wizard';
+
+switch (characterClass) {
+    // (characterClass === 'fighter')
+    case 'fighter':
+        console.log("I'm very strategic!");
         break;
-    case 2:
-        console.log('Tuesday');
+    case 'monk':
+        console.log('Who needs weapons, when I have my fists!');
         break;
-    case 3:
-        console.log('Wednesday');
+    case 'wizard':
+        console.log('I get my magic from books.');
+    case 'sorcerer':
+    case 'warlock':
+        console.log('I can do powerful magic!');
         break;
-    case 6:
-    case 7:
-        console.log('Weekend');
     default:
-        console.log('Another day');
+        console.log('I love DnD!');
 }
 ```
 
@@ -123,7 +162,7 @@ function sayHelloWorld() {
 }
 ```
 
--   Why did nothing happen?
+-   Why did nothing happen? Have to call function
 -   Talk about return keyword, and how you can store it in a variable
 -   Without return, returns undefined
 -   Call the function before it's declared, ask and discuss
@@ -133,9 +172,10 @@ function sayHelloWorld() {
 -   Write something fun, but here's the syntax
 
 ```js
-const square = function (number) {
-    return number * number;
+const goodByeWorld = function () {
+    console.log('Goodbye, cruel world!');
 };
+goodByeWorld();
 ```
 
 -   Are not hoisted
@@ -147,6 +187,6 @@ const square = function (number) {
 
 ## Final Thoughts
 
--   This is everything you need to finish the exercsies (except #5 and #7.4)
+-   This is everything you need to finish the exercises (except #5 and #7.4)
 -   Go to playground and demo downloading an exercise
 -   Fix logo, mention errors don't show in the UI
