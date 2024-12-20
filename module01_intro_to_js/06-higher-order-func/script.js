@@ -54,7 +54,7 @@ const higherOrderArrayFunc = (arr, func) => {
 // avatarChars.forEach((c) => print(c));
 // avatarChars.forEach((char) => sayHello(char));
 
-// avatarChars.forEach((content) => console.log(content));
+avatarChars.forEach((content) => console.log(content));
 
 // avatarChars.forEach((char) => {
 //     console.log(`Hi, I'm ${char.name} and I'm from the ${char.nation}`);
