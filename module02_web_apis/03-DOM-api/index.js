@@ -148,6 +148,10 @@ addForm.addEventListener('submit', (e) => {
     // console.log(name.value);
     // console.log(imgUrl.value);
     // console.log(quote.value);
+    if (!name.value || !imgUrl.value || !quote.value) {
+        alert('Please fill in required fields!');
+        return;
+    }
 
     const newDuck = {
         _id: ducksInThePond.length,

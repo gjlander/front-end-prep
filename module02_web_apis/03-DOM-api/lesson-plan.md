@@ -300,9 +300,14 @@ const newDuck = {
 console.log(newDuck);
 ```
 
--   Let's also reset the form inputs so those don't linger
+-   Let's also reset the form inputs so those don't linger, and add simple validation. Because empty strings are falsy, we can check for them
 
 ```js
+if (!name.value || !imgUrl.value || !quote.value) {
+    alert('Please fill in required fields!');
+    return;
+}
+
 e.target.reset();
 ```
 
