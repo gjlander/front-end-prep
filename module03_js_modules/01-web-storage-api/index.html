@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link
+            rel="shortcut icon"
+            href="rubber-duck-icon.svg"
+            type="image/svg"
+        />
+        <title>The Duck Pond</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+    </head>
+    <body class="bg-slate-600 text-gray-300">
+        <nav>
+            <ul
+                class="flex justify-end gap-6 bg-slate-800 py-2 px-8 text-2xl mb-6"
+            >
+                <li class="p-2 rounded-lg hover:bg-slate-600">
+                    <a href="index.html">Home</a>
+                </li>
+                <li class="p-2 rounded-lg hover:bg-slate-600">
+                    <a href="src/myPond.html">My Pond</a>
+                </li>
+            </ul>
+        </nav>
+        <header class="text-center">
+            <h1 class="text-6xl mb-6">The Duck Pond</h1>
+            <button
+                id="summon-btn"
+                class="bg-purple-600 p-4 rounded-lg text-2xl"
+            >
+                Summon the ducks!
+            </button>
+        </header>
+        <main>
+            <section
+                id="pond"
+                class="flex justify-center flex-wrap gap-4 p-4 w-full"
+            ></section>
+        </main>
+        <script src="src/index.js"></script>
+    </body>
+</html>
