@@ -59,6 +59,7 @@ const header = document.querySelector('header');
 const h1 = document.querySelector('header h1');
 const pond = document.querySelector('#pond');
 const summonBtn = document.querySelector('#summon-btn');
+const addForm = document.querySelector('#add-form');
 // const inputs = document.querySelectorAll('#add-form input');
 
 // console.log(header);
@@ -92,9 +93,70 @@ const renderDucks = (ducksArray, container) => {
         `;
     });
 };
+// const renderSingleDuck = (duckObj, container) => {
+//     const { imgUrl, name, quote } = duckObj;
+//     const card = document.createElement('div');
+//     card.className =
+//         'shadow-xl hover:shadow-2xl hover:cursor-pointer w-96 rounded-md m-auto flex-flex-col';
+//     card.textContent = name;
+
+//     container.appendChild(card);
+// };
+
+const renderSingleDuck = (duckObj, container) => {
+    const { imgUrl, name, quote } = duckObj;
+    const card = document.createElement('div');
+    card.className =
+        'shadow-xl hover:shadow-2xl hover:cursor-pointer w-96 rounded-md m-auto flex-flex-col';
+
+    const figure = document.createElement('figure');
+    figure.className = 'rounded-t-md overflow-hidden w-full h-96';
+    const img = document.createElement('img');
+    img.src = imgUrl;
+    img.alt = name;
+    figure.appendChild(img);
+
+    const body = document.createElement('div');
+    body.className = 'flex flex-col p-6 pt-2 rounded-b-md bg-slate-800 h-40';
+    const title = document.createElement('h2');
+    title.className = 'text-3xl border-b-2 mb-4 border-b-gray-400';
+    title.textContent = name;
+    const text = document.createElement('p');
+    text.textContent = quote;
+    body.appendChild(title);
+    body.appendChild(text);
+
+    card.appendChild(figure);
+    card.appendChild(body);
+
+    container.appendChild(card);
+};
 
 // renderDucks(ducksInThePond, pond);
 
 summonBtn.addEventListener('click', () => renderDucks(ducksInThePond, pond));
 
 // summonBtn.onclick = () => renderDucks(ducksInThePond, pond);
+
+addForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    // console.log(e.target);
+    const name = addForm.querySelector('#name');
+    const imgUrl = addForm.querySelector('#img-url');
+    const quote = addForm.querySelector('#quote');
+
+    // console.log(name.value);
+    // console.log(imgUrl.value);
+    // console.log(quote.value);
+
+    const newDuck = {
+        _id: ducksInThePond.length,
+        name: name.value,
+        imgUrl: imgUrl.value,
+        quote: quote.value,
+    };
+
+    console.log(newDuck);
+    renderSingleDuck(newDuck, pond);
+    e.target.reset();
+});

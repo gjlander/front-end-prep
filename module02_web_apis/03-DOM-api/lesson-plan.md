@@ -222,3 +222,139 @@ const summonBtn = document.querySelector('#summon-btn');
 ```js
 summonBtn.addEventListener('click', () => renderDucks(ducksInThePond, pond));
 ```
+
+-   Second option is to change the onclick
+
+```js
+summonBtn.onclick = () => renderDucks(ducksInThePond, pond);
+```
+
+-   We will default to using addEventListener()
+
+### Submit Event
+
+-   Let's finally do something with that form!
+-   Get a reference to it
+
+```js
+const addForm = document.querySelector('#add-form');
+```
+
+-   Add a submit listener
+
+```js
+addForm.addEventListener('submit', () =>
+    console.log('Tried to add a new duck!')
+);
+```
+
+-   We can see this refreshed the page - annoying! Why? How can we stop that?
+-   By default, forms always refresh the page, for each event, we can pass that event as an argument. Then we have access to different methods and properties.
+-   We can also prevent this default behavior
+
+```js
+addForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    console.log(e);
+    console.log('Tried to add a new duck!');
+});
+```
+
+-   We can always access the event target - which is refers to the HTML element the event is happening on
+-   There are lots of ways we could use this, but for today we'll go simple, and just grab a reference to the inputs we need using querySelector. Just like we could use the document, can also use other elements
+
+```js
+addForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    // console.log(e.target);
+    const name = addForm.querySelector('#name');
+    const imgUrl = addForm.querySelector('#img-url');
+    const quote = addForm.querySelector('#quote');
+
+    console.dir(name);
+    console.dir(imgUrl);
+    console.dir(quote);
+
+    console.log('Tried to add a new duck!');
+});
+```
+
+-   Inputs have a value property, we can use that to now use the user input
+
+```js
+console.log(name.value);
+console.log(imgUrl.value);
+console.log(quote.value);
+```
+
+-   We can make a newDuck object, and assign the input values to the property values
+
+```js
+const newDuck = {
+    _id: ducksInThePond.length,
+    name: name.value,
+    imgUrl: imgUrl.value,
+    quote: quote.value,
+};
+
+console.log(newDuck);
+```
+
+-   Let's also reset the form inputs so those don't linger
+
+```js
+e.target.reset();
+```
+
+-   All well and good, we want to see the new duck! Have to render it, this time we'll use createElement()
+
+#### Let's start with a simple version
+
+```js
+const renderSingleDuck = (duckObj, container) => {
+    const { imgUrl, name, quote } = duckObj;
+    const card = document.createElement('div');
+    card.className =
+        'shadow-xl hover:shadow-2xl hover:cursor-pointer w-96 rounded-md m-auto flex-flex-col';
+    card.textContent = name;
+
+    container.appendChild(card);
+};
+```
+
+-   Now buckle up for the full thing
+
+```js
+const renderSingleDuck = (duckObj, container) => {
+    const { imgUrl, name, quote } = duckObj;
+    const card = document.createElement('div');
+    card.className =
+        'shadow-xl hover:shadow-2xl hover:cursor-pointer w-96 rounded-md m-auto flex-flex-col';
+
+    const figure = document.createElement('figure');
+    figure.className = 'rounded-t-md overflow-hidden w-full h-96';
+    const img = document.createElement('img');
+    img.src = imgUrl;
+    img.alt = name;
+    figure.appendChild(img);
+
+    const body = document.createElement('div');
+    body.className = 'flex flex-col p-6 pt-2 rounded-b-md bg-slate-800 h-40';
+    const title = document.createElement('h2');
+    title.className = 'text-3xl border-b-2 mb-4 border-b-gray-400';
+    title.textContent = name;
+    const text = document.createElement('p');
+    text.textContent = quote;
+    body.appendChild(title);
+    body.appendChild(text);
+
+    card.appendChild(figure);
+    card.appendChild(body);
+
+    container.appendChild(card);
+};
+```
+
+-   This has no persistence - it's not saved anywhere. If we reload the page it's gone. We'll look how to actually save this later this week.
+
+### I know that's a lot! Use the playground, the docs, and the lecture code to help you on the exercises. Treat #5 as bonus.
