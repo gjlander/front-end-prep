@@ -63,6 +63,7 @@ console.log(20 + 5);
 
 -   Can run in Node.js, but was built for the browser - so let's connect it
 -   Make an HTML file and connect the JS with a script tag
+-   Open in browser - how do I find the log? Dev tools!
 -   Mention the playground has done some extra work to simply display it - we'll circle back to that at the end
 
 ## Variables
@@ -183,6 +184,7 @@ goodByeWorld();
 ### Arrow functions - Introduced in ES6 in 2015 (along with lots of stuff)
 
 -   Look similar to function expressions, preferred syntax nowadays
+-   Go over arguments
 -   Mention default parameters, let them know it's ok if rest parameters don't make sense yet
 
 ## Final Thoughts

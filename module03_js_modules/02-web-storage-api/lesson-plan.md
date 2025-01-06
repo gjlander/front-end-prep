@@ -132,12 +132,13 @@ addForm.addEventListener('submit', (e) => {
 -   Now it saves properly
 
 ```js
-localStorage.setItem('Steve', JSON.stringify({ name: 'Steve', age: 32 }));
+localStorage.setItem('newDuck', JSON.stringify(newDuck));
 ```
 
 ### But we want a pond full of ducks... we can save an array of objects!
 
 -   We could use the .push() method, but we could also use the spread operator
+-   Create an empty array for the ducks
 
 ```js
 const myDucks = [];
