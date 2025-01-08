@@ -3,7 +3,7 @@
 
 // Log the values of each one of them to the console
 
-// Create an ES5 function with no parameters that prints a string to the console
+// Create an ES5 function with no parameters that prints a string to the console. Then call it.
 
 // Create an ES5 function that takes 2 parameters and **RETURNS** a string that includes those 2 parameters using template literal. Then log the value of that function to the console.
 
@@ -30,7 +30,3 @@
 // Create an array containing 3 objects. The objects should have the same keys as the one in the previous exercise
 
 // Loop through the array of objects and log all the names to the console
-
-// Give 2 of your objects the same age. Now filter only the objects with that age.
-
-// Use the find method to display the last person in the array to the console.

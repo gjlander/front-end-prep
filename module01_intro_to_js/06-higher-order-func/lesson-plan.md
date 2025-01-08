@@ -61,9 +61,9 @@ sayHelloLoop(avatarChars);
 -   Remember, parameter names can be whatever we want, they're just a placeholder
 
 ```js
-const higherOrderArrayFunc = (arr, func) => {
+const higherOrderArrayFunc = (arr, callbackFunc) => {
     for (let i = 0; i < arr.length; i++) {
-        func(arr[i]);
+        callbackFunc(arr[i]);
     }
 };
 ```

@@ -127,14 +127,14 @@ console.log(dndClasses[2]);
 console.log(dndClasses[3]);
 ```
 
--   This worked because we have 4 items, imagine we have 100, or 1,000. Or don't know the length of the array. What can we use to do something over and over again?
-
 -   Can also update an item with this technique
 
 ```js
 dndClasses[3] = 'monk';
 console.log(dndClasses[3]);
 ```
+
+-   This worked because we have 4 items, imagine we have 100, or 1,000. Or don't know the length of the array. What can we use to do something over and over again?
 
 ## Loop over an array
 
@@ -260,4 +260,4 @@ console.log(dndClasses.slice(0, 3));
 console.log(dndClasses.join());
 ```
 
-### Arrays are foundational to web development. We'll continue to dive deeper, but array practice array manipulation over and over.
+### Arrays are foundational to web development. We'll continue to dive deeper, but practice array manipulation over and over.

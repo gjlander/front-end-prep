@@ -17,9 +17,9 @@
 ```js
 const dndChar = {
     name: 'Kaladan',
-    class: 'paladin',
+    dndClass: 'paladin',
     level: 12,
-    spells: ['divine smite', 'bless', "crusader's mantle"],
+    'spells-list': ['divine smite', 'bless', "crusader's mantle"],
 };
 
 console.log(dndChar);
@@ -42,17 +42,17 @@ console.log(dndChar.name);
 
 ```js
 console.log(dndChar['spells-list']);
-const propIWant = 'class';
+const propIWant = 'dndClass';
 
 console.log(dndChar[propIWant]);
 ```
 
--   Can use hyphen, default to camelCase
+-   Can use hyphen, but by convention we use camelCase
 
 ```js
 const dndChar = {
     name: 'Kaladan',
-    class: 'paladin',
+    dndClass: 'paladin',
     level: 12,
     spellsList: ['divine smite', 'bless', "crusader's mantle"],
 };
@@ -75,7 +75,7 @@ console.log(dndChar);
 ```js
 const dndChar = {
     name: 'Kaladan',
-    class: 'paladin',
+    dndClass: 'paladin',
     level: 12,
     spellsList: ['divine smite', 'bless', "crusader's mantle"],
     yellCatchPhrase() {
@@ -93,14 +93,14 @@ const dndChar = {
 ```js
 const dndChar = {
     name: 'Kaladan',
-    class: 'paladin',
+    dndClass: 'paladin',
     level: 12,
     spellsList: ['divine smite', 'bless', "crusader's mantle"],
     yellCatchPhrase() {
         return 'To smite is right!';
     },
     introduce() {
-        return `My name is ${this.name} the ${this.class}!`;
+        return `My name is ${this.name} the ${this.dndClass}!`;
     },
 };
 
@@ -126,6 +126,9 @@ console.log(name, dndClass, myDndClass);
 ```
 
 ### Go to slide for more detail [here](https://playground.wbscod.in/static/javascript-objects-i/3)
+
+-   Can nest destructuring
+-   Can also destructure arrays using [] brackets
 
 ## Built in objects
 

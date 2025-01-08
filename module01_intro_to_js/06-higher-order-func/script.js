@@ -28,9 +28,9 @@ const sayHello = (char) => {
 
 // sayHelloLoop(avatarChars);
 
-const higherOrderArrayFunc = (arr, func) => {
+const higherOrderArrayFunc = (arr, callbackFunc) => {
     for (let i = 0; i < arr.length; i++) {
-        func(arr[i]);
+        callbackFunc(arr[i]);
     }
 };
 
