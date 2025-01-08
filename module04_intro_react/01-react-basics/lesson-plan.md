@@ -297,9 +297,199 @@ onClick={() => console.log('Another way to add an onClick!')}
 -   This also works with our other events, like onSubmit. You can check the React docs for a full list of events.
 -   We'll leave it at that for today, and in the next lecture we'll look at how to use events to update the page.
 
-## Displaying Data and Props
+## Displaying Data
 
--   Make DuckCard.jsx with placeholder info
--   Talk about using map method, and show just the items first
--   Don't forget the key
--   Copy the HTML from JS into JSX
+-   Make DuckCard.jsx
+
+```js
+const DuckCard = () => {
+    return <div>DuckCard</div>;
+};
+
+export default DuckCard;
+```
+
+-   We want this to show up in our DuckPond, so we import it there
+-   Then we add it to the return of our component - we can nest components
+
+```js
+import DuckCard from './DuckCard';
+
+const DuckPond = () => {
+    return (
+        <section
+            id='pond'
+            className='flex justify-center flex-wrap gap-4 p-4 w-full'
+        >
+            <DuckCard />
+        </section>
+    );
+};
+
+export default DuckPond;
+```
+
+-   Right now it's just a div, let's have it render some actual information, by bringing over the first duck from our array
+
+```js
+const singleDuck = {
+    _id: 1,
+    name: 'Sir Quacks-a-lot',
+    imgUrl: 'https://cdn11.bigcommerce.com/s-nf2x4/images/stencil/1280x1280/products/430/7841/Knight-Rubber-Duck-Yarto-2__93062.1576270637.jpg?c=2',
+    quote: 'I will slay your bugs!',
+};
+```
+
+-   So far, we've been working with plain text, like in HTML.
+-   Because JSX is LIKE HTML but is NOT HTML, we have some additional features, like we can use JS variable directly in our markup
+-   It looks very similar to using a template literal, so let's copy/paste our markup from before
+
+```js
+<div class='shadow-xl hover:shadow-2xl hover:cursor-pointer w-96 rounded-md m-auto flex-flex-col'>
+             <figure class='rounded-t-md overflow-hidden w-full h-96'>
+                <img
+                    class='w-full h-full'
+                    src=${imgUrl}
+                    alt=${name}
+                />
+            </figure>
+            <div class='flex flex-col p-6 pt-2 rounded-b-md bg-slate-800 h-40'>
+                <h2 class='text-3xl border-b-2 mb-4 border-b-gray-400'>
+                    ${name}
+                </h2>
+                <p>${quote}</p>
+            </div>
+        </div>
+```
+
+-   We'll have to make a few adjustments
+-   -   class becomes className like before
+-   -   Let's just add back dot notation for now
+-   -   And get rid of the $ before curly brackets
+-   And voila!
+-   Similar to how we used ${} in a template literal to escape back into JavaScript land, we simply use {} in JSX
+
+### One of the benefits of components, is that they can be reusable. Right now, this duck card only works for the individual duck.
+
+## Props
+
+-   We can solve that by using props!
+-   Remember before we talked about the parent/child hierarchy, parents can pass information to their children, but children can't pass info up. So let's move our Duck into the parent `DuckPond.jsx`
+
+### Passing Props
+
+-   Now that our duck is in the parent, we have to pass the information down
+-   Props just like HTML attributes, but they can only go on components
+-   We can pass our duck like this
+
+```js
+import DuckCard from './DuckCard';
+const singleDuck = {
+    _id: 1,
+    name: 'Sir Quacks-a-lot',
+    imgUrl: 'https://cdn11.bigcommerce.com/s-nf2x4/images/stencil/1280x1280/products/430/7841/Knight-Rubber-Duck-Yarto-2__93062.1576270637.jpg?c=2',
+    quote: 'I will slay your bugs!',
+};
+const DuckPond = () => {
+    return (
+        <section
+            id='pond'
+            className='flex justify-center flex-wrap gap-4 p-4 w-full'
+        >
+            <DuckCard duck={singleDuck} />
+        </section>
+    );
+};
+
+export default DuckPond;
+```
+
+-   Back in our duck card, let's comment out the OG Duck
+-   Now everything breaks! We'll fix it soon, but first let's comment it out
+-   Props are passed down as an object, we can have several props, they would jut get added to the object
+
+```js
+<DuckCard duck={singleDuck} prop2="I'm also here" />
+```
+
+-   As we know, we can destructure arguments in functions, so let's do that here
+
+```js
+const DuckCard = ({ duck, prop2 }) => {
+    console.log(duck, prop2);
+    //component...
+};
+```
+
+-   This is a linting error, we'll just tur n it off in the config file
+-   For type checking the standard it to use TypeScript - learn it after the bootcamp
+
+```js
+'react/prop-types': 'off',
+```
+
+-   Now we update our dot notation to the prop name, and it works again!
+
+## Rendering Lists
+
+-   We have our single duck now, but we want to render our whole pond. Luckily React makes it very easy for us to render an array of items!
+-   Now let's bring in our whole array of ducks
+
+### We use the map method, because we want to return JSX
+
+-   We use {} to use JS in our JSX
+-   Then map over our ducks array, and return a duck card
+-   We still have to pass down our props
+
+```js
+{
+    ducksInThePond.map((duck) => <DuckCard duck={duck} />);
+}
+```
+
+-   And it works! But we're getting an error, let's check it out
+
+#### If rendering a list, every item needs unique key property
+
+-   Usually you would use the unique id of an item
+-   Without this, React can't tell the difference between the items, which could lead to buggy behavior.
+
+## Conditional Rendering
+
+-   We're almost done! Our last concept is conditional rendering
+-   Let's add a sign in button to the navbar
+-   We want it to check if we're signed in and either say "Sign In" or "Sign Out"
+-   Inside of JSX we can't use an if statement, so we use a ternary operator
+
+```js
+const Navbar = () => {
+    const isSignedIn = false;
+    return (
+        <nav className='flex justify-end bg-slate-800 py-2 px-8 text-2xl mb-6'>
+            <ul className='flex gap-6'>
+                <li className='p-2 rounded-lg hover:bg-slate-600'>
+                    <a href='index.html'>Home</a>
+                </li>
+                <li className='p-2 rounded-lg hover:bg-slate-600'>
+                    <a href='src/myPond.html'>My Pond</a>
+                </li>
+                <li className='p-2 rounded-lg hover:bg-slate-600'>
+                    {isSignedIn ? <a href='#'>Sign Out</a> : <a>Sign In</a>}
+                </li>
+            </ul>
+        </nav>
+    );
+};
+
+export default Navbar;
+```
+
+### There are lots of other ways to take advantage of conditional rendering shown in the [playground](https://playground.wbscod.in/react/react-basics/7)
+
+## React exercises from the playground
+
+-   I know that's a lot! Before I let you go work, I just want to talk about how to work locally with the React exercises
+-   Similar to before, download an unzip
+-   Then all you have to do is `cd` and run `npm i`, these steps can also be found in [Setup with Vite](https://learn.wbscodingschool.com/courses/full-stack-web-app/lessons/%f0%9f%97%9e%ef%b8%8f-setup-with-vite/)
+-   Remember to use `npm run dev` to start the server, we will no longer use live preview
+-   Your first step after downloading will be to move components to their own file
