@@ -362,4 +362,6 @@ const renderSingleDuck = (duckObj, container) => {
 
 -   This has no persistence - it's not saved anywhere. If we reload the page it's gone. We'll look how to actually save this later this week.
 
-### I know that's a lot! Use the playground, the docs, and the lecture code to help you on the exercises. Treat #5 as bonus.
+### I know that's a lot! Use the playground, the docs, and the lecture code to help you on the exercises. Don't feel like you have to 100% exercise 2. Do at least the navbar, but one you feel like you have the hang of it, move on and come back to it if you have time. Treat #5 as bonus.
+
+### The css file doesn't download when working locally for exercise 1, so manually create a `style.css`, link it, and copy/paste the content from the playground
