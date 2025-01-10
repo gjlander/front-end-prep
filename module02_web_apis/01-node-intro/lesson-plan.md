@@ -2,7 +2,7 @@
 
 -   Review environments in [LMS](https://learn.wbscodingschool.com/courses/full-stack-web-app/lessons/%f0%9f%93%9a-javascript-basics/)
 -   So far, all we've really done is log things to the console in the browser. This week, we'll focus on how to use JS to actually interact with the web page.
--   We won't dive into Node until we get to the backend, but for now it will give us a place to practice our JavaScript skills without having to worry about the web page yet. We can continue console logging things, without the extra setup
+-   We won't dive into Node until we get to the backend, but for now it will give us a place to practice our JavaScript skills without having to worry about the web page yet. We can continue console logging things, without the extra setup. And even get some user input
 
 ## Running JS with Node
 
@@ -16,7 +16,7 @@ console.log('Hello, world');
 ```
 
 -   Now, to run the code, I simply write `node hello.js`
--   Remember if our environment in the browser, we find the console logs print to the console in the dev tools. For Node, console logs print to the terminal.
+-   Remember if our environment is the browser, we find the console logs print to the console in the dev tools. For Node, console logs print to the terminal.
 
 ### Can do all of our JS abilities, still only see what gets logged
 
