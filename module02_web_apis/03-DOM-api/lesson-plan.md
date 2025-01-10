@@ -7,12 +7,12 @@
 -   Create elements
 -   Event listeners (form submission)
 
-## First, let's make a simple webpage
+## Let's start with a simple webpage
 
 -   We'll make a pond for our rubber duck debuggers to hang out in
 -   Add our tailwind CDN and empty tailwind.config.js file
--   Git rid of the blinding white, make a header, and an empty section
--   Make a simple form for adding a new duck to the pond
+-   We have a header, and an empty section
+-   And a simple form for adding a new duck to the pond
 
 ## Access elements
 
