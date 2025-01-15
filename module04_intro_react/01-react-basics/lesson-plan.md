@@ -13,6 +13,8 @@
 
 -   This is a simplified version of the result from our Web Storage API lecture.
 -   Routing works differently in React, so we'll eventually bring them back, but for now we'll focus on just having a single page
+-   For that, I also brought our add duck form back into the home page.
+-   I got rid of the summon the ducks button, now they'll appear for us on page load
 -   I also simplified the JS, using our ducksInThePond array again, instead of fetch
 
 ## Making a project with Vite
@@ -153,9 +155,6 @@ export default Navbar;
 
 ```js
 const Header = () => {
-    const handleClick = () => {
-        console.log('You tried to summon the ducks!');
-    };
     return (
         <header className='text-center'>
             <h1
@@ -167,14 +166,6 @@ const Header = () => {
             >
                 The Duck Pond
             </h1>
-            <button
-                id='summon-btn'
-                className='bg-purple-600 p-4 rounded-lg text-2xl'
-                onClick={handleClick}
-                // onClick={() => console.log('Another way to add an onClick!')}
-            >
-                Summon the ducks!
-            </button>
         </header>
     );
 };
@@ -185,39 +176,21 @@ export default Header;
 -   DuckPond.jsx
 
 ```js
-const Header = () => {
-    const handleClick = () => {
-        console.log('You tried to summon the ducks!');
-    };
+const DuckPond = () => {
     return (
-        <header className='text-center'>
-            <h1
-                // style={{
-                //     backgroundColor: 'red',
-                //     padding: '1rem',
-                // }}
-                className='text-6xl mb-6'
-            >
-                The Duck Pond
-            </h1>
-            <button
-                id='summon-btn'
-                className='bg-purple-600 p-4 rounded-lg text-2xl'
-                onClick={handleClick}
-                // onClick={() => console.log('Another way to add an onClick!')}
-            >
-                Summon the ducks!
-            </button>
-        </header>
+        <section
+            id='pond'
+            className='flex justify-center flex-wrap gap-4 p-4 w-full'
+        ></section>
     );
 };
 
-export default Header;
+export default DuckPond;
 ```
 
 -   Footer.jsx
 
-```
+```js
 const Footer = () => {
     return (
         <footer className='flex justify-center bg-slate-800 py-4 text-2xl w-full'>
@@ -268,34 +241,41 @@ export default App;
 ## Events in React
 
 -   React uses synthetic events. All this does is standardize behavior across browsers. We still have events like submit, and click, but the syntax is a little different
--   Let's add a click event to our button here. First let's make a function for it inside the component
+-   There's a click event example in the playground, so let's look at an onChange
+-   By convention these are often called handle<event>
 
 ```js
-const handleClick = () => {
-    console.log('You tried to summon the ducks!');
+const handleChange = (e) => {
+    console.log(e.target.value);
 };
 ```
 
--   Then we add an onClick (with camelCase) like an HTML attribute, and pass it our function (without curly brackets, since we want the function, not the return)
+-   Then we add an onChange (with camelCase) like an HTML attribute, and pass it our function (without curly brackets, since we want the function, not the return)
 
 ```jsx
-<button
-    id='summon-btn'
-    className='bg-purple-600 p-4 rounded-lg text-2xl'
-    onClick={handleClick}
->
-    Summon the ducks!
-</button>
+<input
+    onChange={handleChange}
+    id='name'
+    type='text'
+    placeholder="What is your duck's name?"
+    className='bg-inherit border-solid border-2 border-slate-700 rounded-lg p-2 flex-grow'
+/>
 ```
 
 -   Can also pass an anonymous function
 
 ```jsx
-onClick={() => console.log('Another way to add an onClick!')}
+<input
+    onChange={(e) => console.log(e.target.value)}
+    id='img-url'
+    type='url'
+    placeholder='What does your duck look like?'
+    className='bg-inherit border-solid border-2 border-slate-700 rounded-lg p-2 w-full'
+/>
 ```
 
 -   This also works with our other events, like onSubmit. You can check the React docs for a full list of events.
--   We'll leave it at that for today, and in the next lecture we'll look at how to use events to update the page.
+-   We'll leave it at that for today, and in the next lecture we'll look at how to use events to update the UI.
 
 ## Displaying Data
 
@@ -345,7 +325,7 @@ const singleDuck = {
 -   It looks very similar to using a template literal, so let's copy/paste our markup from before
 
 ```js
-<div class='shadow-xl hover:shadow-2xl hover:cursor-pointer w-96 rounded-md m-auto flex-flex-col'>
+`<div class='shadow-xl hover:shadow-2xl hover:cursor-pointer w-96 rounded-md m-auto flex-flex-col'>
              <figure class='rounded-t-md overflow-hidden w-full h-96'>
                 <img
                     class='w-full h-full'
@@ -359,7 +339,7 @@ const singleDuck = {
                 </h2>
                 <p>${quote}</p>
             </div>
-        </div>
+        </div>`;
 ```
 
 -   We'll have to make a few adjustments

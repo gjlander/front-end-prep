@@ -23,7 +23,7 @@ const header = document.querySelector('header');
 console.log(header);
 ```
 
--   It has a lot of properties on it, highlight classList, className, id, textContent
+-   It has a lot of properties on it, highlight classList, className, id, textContent, style
 -   This is an object, so we can use dot notation to update these properties
 
 ```js
@@ -56,7 +56,7 @@ console.log(inputs);
 
 -   Can still iterate over using forEach, for of..., or for loop
 
-### Other methods, but will default to querySelector, refer to [slide](https://playground.wbscod.in/static/web-apis-dom/3)
+### Other methods, but will default to querySelector, refer to [slide 3](https://playground.wbscod.in/static/web-apis-dom/3)
 
 ## Create elements
 

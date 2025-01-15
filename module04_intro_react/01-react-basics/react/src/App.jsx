@@ -1,6 +1,7 @@
 import Navbar from './components/Navbar';
 import Header from './components/Header';
 import DuckPond from './components/DuckPond';
+import DuckForm from './components/DuckForm';
 import Footer from './components/Footer';
 
 function App() {
@@ -10,6 +11,7 @@ function App() {
             <Header />
             <main className='flex-grow flex flex-col justify-between py-4'>
                 <DuckPond />
+                <DuckForm />
             </main>
             <Footer />
         </div>

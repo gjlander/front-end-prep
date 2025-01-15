@@ -35,6 +35,7 @@ const renderSingleDuck = (duckObj, container) => {
     const figure = document.createElement('figure');
     figure.className = 'rounded-t-md overflow-hidden w-full h-96';
     const img = document.createElement('img');
+    img.className = 'w-full';
     img.src = imgUrl;
     img.alt = name;
     figure.appendChild(img);
@@ -100,7 +101,6 @@ addForm.addEventListener('submit', async (e) => {
     }
 
     const newDuck = {
-        _id: ducksInThePond.length,
         name: name.value,
         imgUrl: imgUrl.value,
         quote: quote.value,

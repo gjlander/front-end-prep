@@ -37,28 +37,37 @@
                 class="flex justify-center flex-wrap gap-4 p-4 w-full"
             ></section>
             <section
-                class="flex flex-col items-center gap-4 border-2 rounded-lg p-4 mx-8 justify-self-end"
+                class="flex flex-col items-center gap-4 border-2 rounded-lg p-4 mx-8"
             >
                 <h2 class="text-4xl">Add a new duck to my pond!</h2>
                 <form id="add-form" class="flex flex-col gap-4 w-3/4">
-                    <input
-                        id="name"
-                        type="text"
-                        placeholder="What is your duck's name?"
-                        class="bg-inherit border-solid border-2 border-slate-700 rounded-lg p-2 w-full"
-                    />
-                    <input
-                        id="img-url"
-                        type="url"
-                        placeholder="What does your duck look like?"
-                        class="bg-inherit border-solid border-2 border-slate-700 rounded-lg p-2 w-full"
-                    />
-                    <input
-                        id="quote"
-                        type="text"
-                        placeholder="What does your duck say?"
-                        class="bg-inherit border-solid border-2 border-slate-700 rounded-lg p-2 w-full"
-                    />
+                    <label class="w-full flex gap-2 items-baseline">
+                        <span class="text-xl">Name:</span>
+                        <input
+                            id="name"
+                            type="text"
+                            placeholder="What is your duck's name?"
+                            class="bg-inherit border-solid border-2 border-slate-700 rounded-lg p-2 flex-grow"
+                        />
+                    </label>
+                    <label class="w-full flex gap-2 items-baseline">
+                        <span class="text-xl">Image:</span>
+                        <input
+                            id="img-url"
+                            type="url"
+                            placeholder="What does your duck look like?"
+                            class="bg-inherit border-solid border-2 border-slate-700 rounded-lg p-2 w-full"
+                        />
+                    </label>
+                    <label class="w-full flex gap-2 items-baseline">
+                        <span class="text-xl">Quote:</span>
+                        <input
+                            id="quote"
+                            type="text"
+                            placeholder="What does your duck say?"
+                            class="bg-inherit border-solid border-2 border-slate-700 rounded-lg p-2 w-full"
+                        />
+                    </label>
                     <button
                         type="submit"
                         class="bg-green-600 p-2 rounded-lg font-bold"
