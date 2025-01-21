@@ -10,7 +10,11 @@ const Navbar = () => {
                     <a href='src/myPond.html'>My Pond</a>
                 </li>
                 <li className='p-2 rounded-lg hover:bg-slate-600'>
-                    {isSignedIn ? <a href='#'>Sign Out</a> : <a>Sign In</a>}
+                    {isSignedIn ? (
+                        <button>Sign Out</button>
+                    ) : (
+                        <button>Sign In</button>
+                    )}
                 </li>
             </ul>
         </nav>

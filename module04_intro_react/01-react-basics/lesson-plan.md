@@ -1,13 +1,9 @@
-# React Fundamentals
+# React Fundamentals Part 1
 
-## Topics to cover for exercises
+## Topics to cover for part 1
 
 -   Breaking UI into components
 -   Styling, vanilla CSS, style attribute, Tailwind
--   Displaying Data
--   Conditional Rendering
--   Rendering Lists
--   Events
 
 # React-ifying a Vanilla Project
 
@@ -116,7 +112,8 @@ body {
 ### Tailwind
 
 -   Just like with Parcel, to use Tailwind, we have to install it
--   The configuration is a bit different for React, we'll go into more detail on the setup later, for today let your brain rest a minute while I set it up
+-   The configuration is a bit different for React, there are instructions in the LMS, but Tailwind also has a [guide for Vite](https://tailwindcss.com/docs/guides/vite)
+-   Setting up Tailwind isn't our focus for today, so sit back and relax while I set it up
 -   Now our page isn't ugly anymore!
 
 ## Breaking our UI into Components
@@ -126,11 +123,17 @@ body {
 
 ### Each section gets a component
 
-#### Make a `src` folder, and a new file for each component. It is possible to have several in the same file (and that's what you'll see in the playground, but best practice is one component per file)
+#### Inside `src` folder make a new folder called `components` and a file for each component. It is possible to have several in the same file (and that's what you'll see in the playground, but best practice is one component per file)
 
 -   By convention, our filename matches the name of the component, and component has to start uppercase
 
--   Navbar.jsx
+#### Navbar.jsx
+
+-   Remove it
+-   Make a new folder called components
+-   Inside, add new file called Navbar.jsx
+-   Write the functional component, and export by default
+-   Only one component per file
 
 ```js
 const Navbar = () => {
@@ -150,6 +153,13 @@ const Navbar = () => {
 
 export default Navbar;
 ```
+
+-   import it in App.jsx
+-   put it in the return with our JSX
+-   All components start with capitol letter, native HTMl elements with lowercase
+-   nothing has changed about our UI, it's just more organized
+
+### Let's do the same for the Header, DuckPond, DuckForm, and Footer
 
 -   Header.jsx
 
@@ -188,6 +198,55 @@ const DuckPond = () => {
 export default DuckPond;
 ```
 
+-   DuckForm.jsx
+
+```js
+const DuckForm = () => {
+    return (
+        <section className='flex flex-col items-center gap-4 border-2 rounded-lg p-4 mx-8'>
+            <h2 className='text-4xl'>Add a new duck to my pond!</h2>
+            <form id='add-form' className='flex flex-col gap-4 w-3/4'>
+                <label className='w-full flex gap-2 items-baseline'>
+                    <span className='text-xl'>Name:</span>
+                    <input
+                        id='name'
+                        type='text'
+                        placeholder="What is your duck's name?"
+                        className='bg-inherit border-solid border-2 border-slate-700 rounded-lg p-2 flex-grow'
+                    />
+                </label>
+                <label className='w-full flex gap-2 items-baseline'>
+                    <span className='text-xl'>Image:</span>
+                    <input
+                        id='img-url'
+                        type='url'
+                        placeholder='What does your duck look like?'
+                        className='bg-inherit border-solid border-2 border-slate-700 rounded-lg p-2 w-full'
+                    />
+                </label>
+                <label className='w-full flex gap-2 items-baseline'>
+                    <span className='text-xl'>Quote:</span>
+                    <input
+                        id='quote'
+                        type='text'
+                        placeholder='What does your duck say?'
+                        className='bg-inherit border-solid border-2 border-slate-700 rounded-lg p-2 w-full'
+                    />
+                </label>
+                <button
+                    type='submit'
+                    className='bg-green-600 p-2 rounded-lg font-bold'
+                >
+                    Add duck
+                </button>
+            </form>
+        </section>
+    );
+};
+
+export default DuckForm;
+```
+
 -   Footer.jsx
 
 ```js
@@ -210,6 +269,7 @@ export default Footer;
 import Navbar from './components/Navbar';
 import Header from './components/Header';
 import DuckPond from './components/DuckPond';
+import DuckForm from './components/DuckForm';
 import Footer from './components/Footer';
 
 function App() {
@@ -219,6 +279,7 @@ function App() {
             <Header />
             <main className='flex-grow flex flex-col justify-between py-4'>
                 <DuckPond />
+                <DuckForm />
             </main>
             <Footer />
         </div>
@@ -238,47 +299,26 @@ export default App;
 -   Show it makes an error
 -   Must have one parent element, if it's not needed, can use an empty one
 
-## Events in React
+## [Playground Examples](https://playground.wbscod.in/react/react-basics/1)
 
--   React uses synthetic events. All this does is standardize behavior across browsers. We still have events like submit, and click, but the syntax is a little different
--   There's a click event example in the playground, so let's look at an onChange
--   By convention these are often called handle<event>
+-   Limitation of playground to only have 1 JS file
+-   Some documentation has this format as well, so good to be able to read
+-   Locally, each function would be it's own file
+-   Start at bottom with `App` and then look at what you need one at a time
 
-```js
-const handleChange = (e) => {
-    console.log(e.target.value);
-};
-```
+# React Fundamentals Part 2 (keep going for WD059)
 
--   Then we add an onChange (with camelCase) like an HTML attribute, and pass it our function (without curly brackets, since we want the function, not the return)
+## Topics for part 2
 
-```jsx
-<input
-    onChange={handleChange}
-    id='name'
-    type='text'
-    placeholder="What is your duck's name?"
-    className='bg-inherit border-solid border-2 border-slate-700 rounded-lg p-2 flex-grow'
-/>
-```
-
--   Can also pass an anonymous function
-
-```jsx
-<input
-    onChange={(e) => console.log(e.target.value)}
-    id='img-url'
-    type='url'
-    placeholder='What does your duck look like?'
-    className='bg-inherit border-solid border-2 border-slate-700 rounded-lg p-2 w-full'
-/>
-```
-
--   This also works with our other events, like onSubmit. You can check the React docs for a full list of events.
--   We'll leave it at that for today, and in the next lecture we'll look at how to use events to update the UI.
+-   Displaying Data
+-   Conditional Rendering
+-   Rendering Lists
+-   Events
 
 ## Displaying Data
 
+-   So far, we've taken HTML and converted it into JSX, so everything is hard coded in. But we can also display data based on JS
+-   Let's make a new component for a Duck Card, and start simple
 -   Make DuckCard.jsx
 
 ```js
@@ -349,6 +389,8 @@ const singleDuck = {
 -   And voila!
 -   Similar to how we used ${} in a template literal to escape back into JavaScript land, we simply use {} in JSX
 
+# End here for WD059 - still demo playground
+
 ### One of the benefits of components, is that they can be reusable. Right now, this duck card only works for the individual duck.
 
 ## Props
@@ -410,6 +452,39 @@ const DuckCard = ({ duck, prop2 }) => {
 
 -   Now we update our dot notation to the prop name, and it works again!
 
+### Using spread operator to deconstruct individual props
+
+-   Passing the whole duck can be useful if we need the whole duck, but since we know exactly which properties we need, we have another option
+-   We can use the spread operator to pass down the duck, and directly deconstruct just the properties we need
+
+```js
+<DuckCard duck={singleDuck} {...duck} prop2="I'm also here" />
+```
+
+-   Now inside of DuckCard.jsx, we can pass the properties we want directly, and get rid of the dot notation
+
+```js
+const DuckCard = ({ imgUrl, name, quote }) => {
+    // console.log(duck, prop2);
+
+    return (
+        <div className='shadow-xl hover:shadow-2xl hover:cursor-pointer w-96 rounded-md m-auto flex-flex-col'>
+            <figure className='rounded-t-md overflow-hidden w-full h-96'>
+                <img className='w-full h-full' src={imgUrl} alt={name} />
+            </figure>
+            <div className='flex flex-col p-6 pt-2 rounded-b-md bg-slate-800 h-40'>
+                <h2 className='text-3xl border-b-2 mb-4 border-b-gray-400'>
+                    {name}
+                </h2>
+                <p>{quote}</p>
+            </div>
+        </div>
+    );
+};
+
+export default DuckCard;
+```
+
 ## Rendering Lists
 
 -   We have our single duck now, but we want to render our whole pond. Luckily React makes it very easy for us to render an array of items!
@@ -423,7 +498,7 @@ const DuckCard = ({ duck, prop2 }) => {
 
 ```js
 {
-    ducksInThePond.map((duck) => <DuckCard duck={duck} />);
+    ducksInThePond.map((duck) => <DuckCard {...duck} />);
 }
 ```
 
@@ -436,7 +511,8 @@ const DuckCard = ({ duck, prop2 }) => {
 
 ## Conditional Rendering
 
--   We're almost done! Our last concept is conditional rendering
+-   A very powerful aspect of React is conditional rendering.
+-   This can scale to something as small as applying CSS conditionally, to rendering different components, or even entire pages
 -   Let's add a sign in button to the navbar
 -   We want it to check if we're signed in and either say "Sign In" or "Sign Out"
 -   Inside of JSX we can't use an if statement, so we use a ternary operator
@@ -454,7 +530,11 @@ const Navbar = () => {
                     <a href='src/myPond.html'>My Pond</a>
                 </li>
                 <li className='p-2 rounded-lg hover:bg-slate-600'>
-                    {isSignedIn ? <a href='#'>Sign Out</a> : <a>Sign In</a>}
+                    {isSignedIn ? (
+                        <button>Sign Out</button>
+                    ) : (
+                        <button>Sign In</button>
+                    )}
                 </li>
             </ul>
         </nav>
@@ -465,6 +545,46 @@ export default Navbar;
 ```
 
 ### There are lots of other ways to take advantage of conditional rendering shown in the [playground](https://playground.wbscod.in/react/react-basics/7)
+
+## Events in React
+
+-   Our final piece, events!
+-   React uses synthetic events. All this does is standardize behavior across browsers. We still have events like submit, and click, but the syntax is a little different
+-   There's a click event example in the playground, so let's look at an onChange
+-   By convention these are often called handle<event>
+
+```js
+const handleChange = (e) => {
+    console.log(e.target.value);
+};
+```
+
+-   Then we add an onChange (with camelCase) like an HTML attribute, and pass it our function (without curly brackets, since we want the function, not the return)
+
+```jsx
+<input
+    onChange={handleChange}
+    id='name'
+    type='text'
+    placeholder="What is your duck's name?"
+    className='bg-inherit border-solid border-2 border-slate-700 rounded-lg p-2 flex-grow'
+/>
+```
+
+-   Can also pass an anonymous function
+
+```jsx
+<input
+    onChange={(e) => console.log(e.target.value)}
+    id='img-url'
+    type='url'
+    placeholder='What does your duck look like?'
+    className='bg-inherit border-solid border-2 border-slate-700 rounded-lg p-2 w-full'
+/>
+```
+
+-   This also works with our other events, like onSubmit. You can check the React docs for a full list of events.
+-   We'll leave it at that for today, and in the next lecture we'll look at how to use events to update the UI.
 
 ## React exercises from the playground
 
