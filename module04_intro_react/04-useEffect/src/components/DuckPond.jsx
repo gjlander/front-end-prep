@@ -13,7 +13,7 @@ const DuckPond = ({ ducks }) => {
             className='flex justify-center flex-wrap gap-4 p-4 w-full'
         >
             {/* <DuckCard duck={singleDuck} prop2="I'm also here" /> */}
-            {ducks.map((duck) => (
+            {ducks?.map((duck) => (
                 <DuckCard key={duck._id} {...duck} />
             ))}
         </section>
