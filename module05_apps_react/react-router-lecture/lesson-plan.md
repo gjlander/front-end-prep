@@ -6,7 +6,6 @@
 -   Link and NavLink
 -   Layout and Outlet (nested routes)
 -   Dynamic Routes and useParams
--   404 Page
 -   useNavigate
 
 ## Initial Setup
@@ -259,3 +258,127 @@ export default MainLayout;
 
 -   This only works for routes nested inside our Layout Route, it we move it outside, no more layout (demo this)
 -   This outlet works as a placeholder, so on /, it renders `<Home/>` where Outlet is, when the path is 'mypond' it renders `<MyPond/>`
+
+## Dynamic Routes
+
+-   So far we've only used static routes, but a really cool feature of React Router is the use of dynamic routes
+-   With dynamic routes, we can essentially give a placeholder name (similar to passing an argument a function)
+-   Let's make a new single duck page with placeholder info from our duck
+
+```js
+import { duck } from '../data/ducks';
+const DuckPage = () => {
+    const { name, imgUrl, quote } = duck;
+    console.log(imgUrl);
+    return (
+        <div className='hero bg-base-100 min-h-screen'>
+            <div className='hero-content flex-col lg:flex-row'>
+                <img src={imgUrl} className='max-w-sm rounded-lg shadow-2xl' />
+                <div>
+                    <h1 className='text-5xl font-bold'>{name}</h1>
+                    <p className='py-6'>{quote}</p>
+                    <button className='btn btn-primary'>Go back</button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default DuckPage;
+```
+
+-   Next we import it, and set it as the element to our new route
+-   To indicate we want part of our route to be static, we use the :
+
+```js
+<Route path='ducks/:duckId' element={<DuckPage />} />
+```
+
+-   Now if we type the URL, no matter what we put for the dynamic part, it takes us to the right page (demo this)
+-   Of course, this isn't what we want. What we want is for that dynamic part to be the unique ID so we can use it to display the information of one specific duck
+-   If we wrap each card in a Link component, we can use the ID to set the dynamic part of the route, like so
+
+```js
+{
+    ducks.map((duck) => (
+        <Link key={duck._id} to={`ducks/${duck._id}`}>
+            <DuckCard {...duck} />
+        </Link>
+    ));
+}
+```
+
+-   Now to access the dynamic section of the route, we an use a custom hook from React Router called useParams.
+-   We deconstruct whatever name we gave to the dynamic route (in our case duckId), and now we can use it
+
+```js
+const { duckId } = useParams();
+console.log('duckId: ', duckId);
+```
+
+-   In our `ducks.js` file, we have another function that gets a single duck by ID, we can now import that function, and use the duckId from useParams to get our individual duck, and display that instead of our placeholder duck
+-   Since we want this to run when the page loads, we'll put it inside of a useEffect, then add our duckId to the dependency array so it updates any time we go to the page for a new duck. We will also want a state to store our current duck
+-   This will look similar to our other fetch, so let's copy/paste it, then update
+
+```js
+const [currDuck, setCurrDuck] = useState({});
+const { duckId } = useParams();
+console.log('duckId: ', duckId);
+const { name, imgUrl, quote } = currDuck;
+
+useEffect(() => {
+    let ignore = false;
+    (async () => {
+        try {
+            const duckData = await getDuckById(duckId);
+            if (!ignore) {
+                setCurrDuck(duckData);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    })();
+
+    return () => {
+        ignore = true;
+    };
+}, [duckId]);
+```
+
+-   Now whichever duck we click on, it shows the info for that duck!
+
+## useNavigate
+
+-   One last concept to cover before we're done.
+-   Most of the time, we'll use the Link or NavLink component for navigation, but sometimes we want to navigate based on where we were, or as a side effect
+-   For example, in our "Go Back" button, we just want to go one page back in our history, just like the back button the browser offers
+-   We can't do that with Link, so we can use another custom hook from React Router, called useNavigate
+-   As always, we import it, Then to use it, look like this
+
+```js
+const navigate = useNavigate();
+
+const handleGoBack = () => {
+    navigate(-1);
+};
+```
+
+-   To go back one page, we simply pass -1 as an argument
+-   In this case, it's not taking to the "/" path, but checking our history and going back one
+
+### Navigation as a side effect
+
+-   Our other use case for useNavigate is if we want the navigation to happen as a side effect
+-   Say for example, once our use is signed in, we want to redirect them to the mypond page after 1 second
+
+```js
+const navigate = useNavigate();
+const handleSignIn = () => {
+    setSignedIn((prev) => !prev);
+    setTimeout(() => {
+        navigate('/mypond');
+    }, 1000);
+};
+```
+
+## Go to exercise and walk-through template repo

@@ -1,9 +1,13 @@
 import { useState } from 'react';
-import { Link, NavLink } from 'react-router';
+import { Link, NavLink, useNavigate } from 'react-router';
 const Navbar = () => {
     const [signedIn, setSignedIn] = useState(false);
+    const navigate = useNavigate();
     const handleSignIn = () => {
         setSignedIn((prev) => !prev);
+        setTimeout(() => {
+            navigate('/mypond');
+        }, 1000);
     };
     return (
         <div className='navbar bg-slate-800 '>

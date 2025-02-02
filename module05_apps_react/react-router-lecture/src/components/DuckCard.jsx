@@ -1,4 +1,3 @@
-// import { duck } from '../data/ducks';
 const DuckCard = ({ imgUrl, name, quote }) => {
     return (
         <div className='shadow-xl hover:shadow-2xl hover:cursor-pointer w-96 rounded-md m-auto flex-flex-col'>

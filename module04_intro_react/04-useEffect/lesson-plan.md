@@ -21,16 +21,12 @@
 
 ```js
 const getAllDucks = async () => {
-    try {
-        const res = await fetch('https://duckpond-89zn.onrender.com/ducks/');
-        if (!res.ok) throw new Error(`${res.status}. Something went wrong!`);
-        const data = await res.json();
-        // console.log(data);
+    const res = await fetch('https://duckpond-89zn.onrender.com/ducks/');
+    if (!res.ok) throw new Error(`${res.status}. Something went wrong!`);
+    const data = await res.json();
+    // console.log(data);
 
-        return data;
-    } catch (error) {
-        console.error(error);
-    }
+    return data;
 };
 
 export { getAllDucks };
@@ -84,6 +80,23 @@ useEffect(() => {
         setDucks(allDucks);
     })();
 }, []);
+```
+
+-   Since this is async, and we don't have a try/catch block in our `getDucks` function, we can add one here
+-   If an error gets thrown in getDucks, it will still land in the catch block of our parent function
+
+```js
+(async () => {
+    try {
+        const allDucks = await getAllDucks();
+
+        if (!ignore) {
+            setDucks(allDucks);
+        }
+    } catch (error) {
+        console.error(error);
+    }
+})();
 ```
 
 -   Because this only runs once (or twice in development), we don't have to worry about racing conditions, so a cleanup function isn't strictly necessary

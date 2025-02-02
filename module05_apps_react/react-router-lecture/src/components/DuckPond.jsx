@@ -1,5 +1,5 @@
+import { Link } from 'react-router';
 import DuckCard from './DuckCard';
-// import { duck } from '../data/ducks';
 
 const DuckPond = ({ ducks }) => {
     return (
@@ -7,12 +7,10 @@ const DuckPond = ({ ducks }) => {
             id='pond'
             className='flex justify-center flex-wrap gap-4 p-4 w-full'
         >
-            {/* <DuckCard
-                {...duck}
-                // duck={duck}
-            /> */}
             {ducks.map((duck) => (
-                <DuckCard key={duck._id} {...duck} />
+                <Link key={duck._id} to={`ducks/${duck._id}`}>
+                    <DuckCard {...duck} />
+                </Link>
             ))}
         </section>
     );

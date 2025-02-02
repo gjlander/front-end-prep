@@ -20,8 +20,6 @@ const Home = () => {
             }
         })();
 
-        console.log('useEffect ran!');
-
         return () => {
             ignore = true;
         };

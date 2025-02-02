@@ -20,9 +20,14 @@ function App() {
         // getAndSetDucks();
 
         (async () => {
-            const allDucks = await getAllDucks();
-            if (!ignore) {
-                setDucks(allDucks);
+            try {
+                const allDucks = await getAllDucks();
+
+                if (!ignore) {
+                    setDucks(allDucks);
+                }
+            } catch (error) {
+                console.error(error);
             }
         })();
 

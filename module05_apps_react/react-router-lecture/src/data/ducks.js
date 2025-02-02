@@ -71,4 +71,13 @@ const getDucks = async () => {
     return data;
 };
 
-export { duck, ducksInThePond, getDucks };
+const getDuckById = async (id) => {
+    const res = await fetch(`https://duckpond-89zn.onrender.com/ducks/${id}`);
+    if (!res.ok) throw new Error(`${res.status}. Something went wrong!`);
+
+    const data = await res.json();
+
+    return data;
+};
+
+export { duck, ducksInThePond, getDucks, getDuckById };
