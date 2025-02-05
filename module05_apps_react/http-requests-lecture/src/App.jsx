@@ -6,6 +6,7 @@ import MyPond from './pages/MyPond';
 import DuckPage from './pages/DuckPage';
 import SignIn from './pages/SignIn';
 import Register from './pages/Register';
+import NotFound from './pages/NotFound';
 
 function App() {
     return (
@@ -18,6 +19,7 @@ function App() {
                     <Route path='register' element={<Register />} />
                     <Route path='ducks/:duckId' element={<DuckPage />} />
                 </Route>
+                <Route path='*' element={<NotFound />} />
             </Routes>
         </BrowserRouter>
     );

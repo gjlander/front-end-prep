@@ -1,8 +1,12 @@
-# React + Vite
+# HTTP Requests and Frontend Authentication
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Topics Covered
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+-   CRUD Operations in a RESTful API
+    -   POST - create a new resource
+    -   GET - read data about a resource
+    -   PUT - update an existing resource
+    -   DELETE - delete an existing resource
+-   Working with [HTTP Client: Postman ](https://learn.wbscodingschool.com/courses/full-stack-web-app/lessons/%f0%9f%97%9e%ef%b8%8f-http-client-postman/)
+-   Creating protected routes
+-   Authenticating a user on the frontend
