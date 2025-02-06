@@ -18,6 +18,7 @@
 -   I added `SignIn`, `Register` `NotFound` pages. The \* for the `NotFound` path acts as a wildcard, so basically anything that isn't a defined path will use that
 -   Show what the pages look like
     -   Sign In button is now a Link to signin page
+    -   handleSignOut has some additional logic
 
 ### MainLayout.jsx
 
@@ -316,6 +317,11 @@ if (!signedIn) return <Navigate to='/signin' />;
 
 -   Now if someone signed out happens upon the page, they get redirected.
 -   This can be done with pages, or entire layouts
+-   On our signin page we can do the opposite. If we are signed in, the redirect to mypond
+
+```js
+if (signedIn) return <Navigate to='/mypond' />;
+```
 
 ## Events API Docs
 

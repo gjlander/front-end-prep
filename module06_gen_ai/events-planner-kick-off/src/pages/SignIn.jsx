@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useOutletContext } from 'react-router';
+import { Link, useOutletContext, Navigate } from 'react-router';
 import { signIn } from '../data/auth';
 const SignIn = () => {
     const [{ email, password }, setForm] = useState({
@@ -7,7 +7,7 @@ const SignIn = () => {
         password: '',
     });
     const [loading, setLoading] = useState(false);
-    const { setSignedIn, setCheckSession } = useOutletContext();
+    const { signedIn, setSignedIn, setCheckSession } = useOutletContext();
 
     const handleChange = (e) =>
         setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -40,6 +40,8 @@ const SignIn = () => {
             setLoading(false);
         }
     };
+
+    if (signedIn) return <Navigate to='/mypond' />;
     return (
         <form
             className='my-5 md:w-1/2 mx-auto flex flex-col gap-3'

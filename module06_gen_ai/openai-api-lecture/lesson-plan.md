@@ -134,3 +134,13 @@ const options = {
 -   If we switch to production, we can see what a real response would be
 
 #### Play around with different system prompts, and messages
+
+## Changing the mock response content
+
+-   There's a lot going on in the Proxy code. By the end of the backend block you'll be able to understand most of it!
+-   For now though, the only change you'll want to make to it (aside from the .env file) is in utils > OpenAIMock.js
+-   Some object oriented programming is being used to create these mock responses, we're only interested in the ChatMock
+-   There's a lot that doesn't make sense, but if we go line by line, there's a lot that will make sense
+    -   line 50 and 51 are validation, throwing an error if you don't have the required properties in the body
+    -   line 53 is where we're assigning the actual text that will come back. If we edit this line, then make a new request, we get a new response
+-   You can use this to model a specific response for testing purposes.

@@ -19,9 +19,7 @@ const Navbar = ({ signedIn, setSignedIn, user, setUser }) => {
             </div>
 
             <div className='navbar-end'>
-                {signedIn && (
-                    <p className='mr-2'>Welcome back, {user.firstName}</p>
-                )}
+                {user && <p className='mr-2'>Welcome back, {user.firstName}</p>}
                 <ul className='menu menu-horizontal items-baseline gap-2'>
                     <li>
                         <NavLink to='/'>Home</NavLink>
