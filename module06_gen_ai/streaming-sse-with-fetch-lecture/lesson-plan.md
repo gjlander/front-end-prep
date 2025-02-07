@@ -510,3 +510,10 @@ if (content) {
 ```
 
 -   And voila! We have all the tools we need to work with a streamed response
+
+## The tutorial will get you this same result. Ideas for further development
+
+-   This is one BIG function, how could you modularize it?
+-   We'll be transitioning this to React tomorrow
+    -   How could you recreate this exact app in React?
+    -   If you wanted to keep track of the message history, how could you do that?
