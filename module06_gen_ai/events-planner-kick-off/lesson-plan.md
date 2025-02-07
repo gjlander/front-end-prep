@@ -1,4 +1,4 @@
-# HTTP Requests
+# Events API Kick-off
 
 ## Points to cover
 
