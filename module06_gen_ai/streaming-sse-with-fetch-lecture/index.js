@@ -1,6 +1,14 @@
 // console.log('Sanity check!');
 const form = document.querySelector('form');
 const resultsContainer = document.querySelector('#results');
+const messages = [
+    {
+        id: crypto.randomUUID(),
+        role: 'system',
+        content:
+            'You are a software developer student that only speaks in rhymes', // This is the system message, it will control the behavior of the chatbot
+    },
+];
 
 form.addEventListener('submit', async (e) => {
     try {
@@ -23,7 +31,15 @@ form.addEventListener('submit', async (e) => {
         );
         stream.disabled = true;
 
-        console.log('form element values: ', promptValue, streamValue);
+        // console.log('form element values: ', promptValue, streamValue);
+
+        const userMsg = {
+            id: crypto.randomUUID(),
+            role: 'user',
+            content: promptValue, // This is the user message, it will be the prompt for the chatbot
+        };
+        messages.push(userMsg);
+        console.log('messages in request: ', messages);
 
         const response = await fetch(
             'http://localhost:5050/api/v1/chat/completions',
@@ -37,17 +53,7 @@ form.addEventListener('submit', async (e) => {
                 body: JSON.stringify({
                     model: 'gpt-4o',
                     stream: streamValue,
-                    messages: [
-                        {
-                            role: 'system',
-                            content:
-                                'You are a software developer student that only speaks in rhymes', // This is the system message, it will control the behavior of the chatbot
-                        },
-                        {
-                            role: 'user',
-                            content: promptValue, // This is the user message, it will be the prompt for the chatbot
-                        },
-                    ],
+                    messages,
                 }),
             }
         );
@@ -61,6 +67,11 @@ form.addEventListener('submit', async (e) => {
             const reader = response.body.getReader();
             const decoder = new TextDecoder('utf-8');
             let dataResult = '';
+            const asstMsg = {
+                id: crypto.randomUUID(),
+                role: 'assistant',
+                content: '',
+            };
             const p = document.createElement('p');
             resultsContainer.appendChild(p);
 
@@ -92,8 +103,22 @@ form.addEventListener('submit', async (e) => {
                         // console.log('content: ', content);
                         if (content) {
                             dataResult += content;
+                            asstMsg.content += content;
+                            const msgExists = messages.some(
+                                (msg) => msg.id === asstMsg.id
+                            );
+
+                            if (!msgExists) {
+                                messages.push(asstMsg);
+                            }
+                            // else {
+                            //     messages.forEach((msg) => {
+                            //         if (msg.id === asstMsg.id) msg = asstMsg;
+                            //     });
+                            // }
+
                             // p.innerHTML = dataResult;
-                            // console.log(dataResult);
+                            console.log(dataResult);
                             const md = marked.parse(dataResult);
                             // Add the content to the paragraph element;
                             p.innerHTML = md;
@@ -101,11 +126,16 @@ form.addEventListener('submit', async (e) => {
                         }
                     }
                 });
+                // console.log('streaming messages: ', messages);
             }
         } else {
             const data = await response.json();
             // Log the response to the console
-            console.log('data: ', data);
+            // console.log('data: ', data);
+            const asstMsg = { ...data.message, id: crypto.randomUUID() };
+            messages.push(asstMsg);
+            // console.log('messages after response: ', messages);
+
             // resultsContainer.innerHTML = data.message?.content;
             resultsContainer.innerHTML = `<p>${marked.parse(
                 data.message?.content
@@ -115,6 +145,7 @@ form.addEventListener('submit', async (e) => {
     } catch (error) {
         console.error(error);
     } finally {
+        console.log('messages after response: ', messages);
         // Enable the submit button
         submit.disabled = false;
         submit.classList.remove(

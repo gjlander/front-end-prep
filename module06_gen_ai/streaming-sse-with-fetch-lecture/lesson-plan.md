@@ -517,3 +517,153 @@ if (content) {
 -   We'll be transitioning this to React tomorrow
     -   How could you recreate this exact app in React?
     -   If you wanted to keep track of the message history, how could you do that?
+
+## Going further - Keeping track of messages
+
+-   First we need a variable to store them in. Since the system message isn't from user input, let's start with it already there
+
+```js
+const messages = [
+    {
+        role: 'system',
+        content:
+            'You are a software developer student that only speaks in rhymes', // This is the system message, it will control the behavior of the chatbot
+    },
+];
+```
+
+-   Then, we make an object for the user message, and push it onto the array
+
+```js
+const userMsg = {
+    role: 'user',
+    content: promptValue, // This is the user message, it will be the prompt for the chatbot
+};
+messages.push(userMsg);
+console.log('messages in request: ', messages);
+```
+
+-   And update or request body to take the messages array
+
+```js
+const response = await fetch('http://localhost:5050/api/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        mode: 'development', // Set the mode to development to not send the request to Open AI for now
+        provider: 'open-ai',
+    },
+    body: JSON.stringify({
+        model: 'gpt-4o',
+        stream: streamValue,
+        messages,
+    }),
+});
+```
+
+-   From here, handling the traditional JSON response is relatively straightforward.
+-   Show the data response and message property
+-   This message property has exactly what we need, so we again, just push it to the end
+
+```js
+else {
+            const data = await response.json();
+            // Log the response to the console
+            // console.log('data: ', data);
+            messages.push(data.message);
+            console.log('messages after response: ', messages);
+
+            // resultsContainer.innerHTML = data.message?.content;
+            resultsContainer.innerHTML = `<p>${marked.parse(
+                data.message?.content
+            )}</p>`;
+            Prism.highlightAll();
+        }
+```
+
+### Where things get interesting is if we're streaming
+
+-   If we turn streaming on, and log at the data object we're getting back, it doesn't resemble our message object anymore.
+-   We're also only getting the content one piece at a time. So in order to store this we need to do a few things
+    -   We need to check if we're continuing a message, or starting a new message
+    -   If we're starting a new message we need to create an object, and set the content from our response
+    -   Else we're continuing a message, and need to find it and update it with the newest piece of the message
+
+#### Making an assistant message object
+
+-   We know what the message object looks like. We know it's role is assistant, and we'll start it as an empty string
+
+```js
+const asstMsg = {
+    role: 'assistant',
+    content: '',
+};
+```
+
+-   Now inside of our `if (content)` block, we can update that message content, similar to the `dataResult`, and push the message to the end
+
+```js
+if (content) {
+    dataResult += content;
+    asstMsg.content += content;
+    messages.push(asstMsg);
+    console.log('streaming messages: ', messages);
+}
+```
+
+#### Oop! We've got a bug in our code!
+
+-   Every time a new chunk is coming, it's pushing the whole thing to the end of the array
+-   In order to fix this, we need
+    -   Only push if we're starting a new message
+    -   A way to uniquely identify each message
+
+##### How can we uniquely identify each message?
+
+-   We can add and id property! To make sure our data is consistent, we should add an id to all the messages
+-   We can use `crypto.randomUUID()` to give us a high chance the ids will be unique
+
+```js
+// at the top
+const messages = [
+    {
+        id: crypto.randomUUID(),
+        role: 'system',
+        content:
+            'You are a software developer student that only speaks in rhymes', // This is the system message, it will control the behavior of the chatbot
+    },
+];
+// line 36ish
+const userMsg = {
+    id: crypto.randomUUID(),
+    role: 'user',
+    content: promptValue, // This is the user message, it will be the prompt for the chatbot
+};
+
+// inside if (streamValue)
+const asstMsg = {
+    id: crypto.randomUUID(),
+    role: 'assistant',
+    content: '',
+};
+
+// inside else
+const asstMsg = { ...data.message, id: crypto.randomUUID() };
+messages.push(asstMsg);
+```
+
+-   Now that we have id's, we can check if the message we're working on previously exists. If it doesn't we do our original push
+
+```js
+if (content) {
+    dataResult += content;
+    asstMsg.content += content;
+    const msgExists = messages.some((msg) => msg.id === asstMsg.id);
+
+    if (!msgExists) {
+        messages.push(asstMsg);
+    }
+}
+```
+
+-   Moving into React, there would be more considerations, but we'll dive more into that tomorrow
