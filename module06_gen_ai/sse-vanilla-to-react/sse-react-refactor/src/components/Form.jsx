@@ -1,7 +1,8 @@
 import { useState } from 'react';
-const Form = () => {
+const Form = ({ setDataResult }) => {
     const [isStream, setIsStream] = useState(false);
     const [prompt, setPrompt] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const toggleChecked = () => setIsStream((prev) => !prev);
     const handleChange = (e) => setPrompt(e.target.value);
@@ -9,23 +10,14 @@ const Form = () => {
         try {
             // Prevent the form from submitting
             e.preventDefault();
-            // const {
-            //     prompt: { value: prompt },
-            //     stream: { checked: isStream },
-            //     submit,
-            // } = form.elements;
+
             // If the prompt value is empty, alert the user
             if (!prompt) return alert('Please enter a prompt');
             // Clear the results container
-            // resultsContainer.innerHTML = '';
+            setDataResult('');
             // Disable the submit button
-            // submit.disabled = true;
-            // submit.classList.add(
-            //     'bg-gray-500',
-            //     'hover:bg-gray-500',
-            //     'cursor-not-allowed'
-            // );
-            // stream.disabled = true;
+            setLoading(true);
+
             // Request
             const response = await fetch(
                 'http://localhost:5050/api/v1/chat/completions',
@@ -64,11 +56,7 @@ const Form = () => {
                 const reader = response.body.getReader();
                 // Create a new TextDecoder
                 const decoder = new TextDecoder('utf-8');
-                // Variable to store the data result
-                let dataResult = '';
-                // Create a new paragraph element before the loop
-                // const p = document.createElement('p');
-                // resultsContainer.appendChild(p);
+
                 // Variable to check if the stream is done
                 let isDone = false;
                 // While the stream is not closed, i.e. done is false
@@ -98,8 +86,9 @@ const Form = () => {
                             const content = data.choices[0]?.delta?.content;
                             // If there is content
                             if (content) {
-                                dataResult += content;
-                                console.log(dataResult);
+                                // dataResult += content;
+                                // console.log(dataResult);
+                                setDataResult((prev) => (prev += content));
 
                                 // const md = marked.parse(dataResult);
                                 // Add the content to the paragraph element;
@@ -112,7 +101,8 @@ const Form = () => {
             } else {
                 // Process response normally
                 const dataResult = await response.json();
-                console.log(dataResult);
+                // console.log(dataResult);
+                setDataResult(dataResult.message?.content);
 
                 // Output the response to the results container
                 // resultsContainer.innerHTML = `<p>${marked.parse(
@@ -125,13 +115,7 @@ const Form = () => {
             console.error(error);
         } finally {
             // Enable the submit button
-            // submit.disabled = false;
-            // submit.classList.remove(
-            //     'bg-gray-500',
-            //     'hover:bg-gray-500',
-            //     'cursor-not-allowed'
-            // );
-            // stream.disabled = false;
+            setLoading(false);
         }
     };
     return (
@@ -140,8 +124,10 @@ const Form = () => {
                 <input
                     id='stream'
                     type='checkbox'
+                    className='checkbox checkbox-primary'
                     onChange={toggleChecked}
                     value={isStream}
+                    disabled={loading}
                 />
                 <label htmlFor='stream'>Stream response?</label>
                 <textarea
@@ -155,7 +141,8 @@ const Form = () => {
                 <button
                     id='submit'
                     type='submit'
-                    className='mt-4 w-full px-4 py-2 bg-blue-600 text-white rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500'
+                    className='mt-4 w-full px-4 py-2 btn btn-primary'
+                    disabled={loading}
                 >
                     Submit✨
                 </button>

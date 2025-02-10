@@ -332,7 +332,180 @@ const handleSubmit = async (e) => {
 
 #### resultsContainer
 
+-   We see here our first piece related to rendering OpenAi's response
+-   We have a component now for the results container - <Chat/>
+-   What do we need instead of DOM manipulation to render there?
+    -   A piece of state for the message
+    -   What should that piece of state look like?
+    -   Where should that state live? Form and Chat both need it
+
 ```js
 // Clear the results container
 // resultsContainer.innerHTML = '';
 ```
+
+-   Let's just call it `dataResult` to match our current variable
+-   `App.jsx`
+-   We declare our state, and pass the state to Chat, and the setter to Form
+
+```js
+import { useState } from 'react';
+import Form from './components/Form';
+import Chat from './components/Chat';
+function App() {
+    const [dataResult, setDataResult] = useState('');
+    return (
+        <div className='h-screen container mx-auto p-5 flex flex-col justify-between gap-5'>
+            <Form setDataResult={setDataResult} />
+            <Chat dataResult={dataResult} />
+        </div>
+    );
+}
+
+export default App;
+```
+
+-   `Chat.jsx`
+-   Deconstruct it, and conditionally render it
+
+```js
+const Chat = ({ dataResult }) => {
+    return (
+        <div
+            id='results'
+            className='h-2/3 w-full p-8 bg-slate-600 rounded-lg shadow-md'
+        >
+            {dataResult && dataResult}
+        </div>
+    );
+};
+
+export default Chat;
+```
+
+-   Back in `Form.jsx` we deconstruct the setter, and can use it for rendering
+-   Now to clear the results container, we reset the state to an empty string
+
+```js
+// Clear the results container
+setDataResult('');
+```
+
+-   Let's circles back to disabling the submit button
+
+#### using our setter
+
+-   If we search for `dataResult` we can find places we'll need to use our setter instead
+-   Since we have our state, we don't need this variable anymore, we also don't need the DOM stuff right after
+
+```js
+// Variable to store the data result
+// let dataResult = '';
+// Create a new paragraph element before the loop
+// const p = document.createElement('p');
+// resultsContainer.appendChild(p);
+```
+
+-   Now inside the `if (content)` we use the setter
+
+```js
+// dataResult += content;
+// console.log(dataResult);
+setDataResult((prev) => (prev += content));
+```
+
+-   Easy as that to render our stream response!
+-   For our json response it's just as easy
+
+```js
+const dataResult = await response.json();
+// console.log(dataResult);
+setDataResult(dataResult.message?.content);
+```
+
+### Disabling the button
+
+-   We have the basic functionality, now let's circle back to disabling the button.
+-   How can we do that in React? Where can we find an example of how we could?
+
+    -   If we set a loading state, we can use it to conditionally render, like [the demo on friday](https://github.com/WD-059/Frontend/blob/main/module06-gen-ai-integration/frontend-auth-and-protected-route-demo/src/pages/SignIn.jsx)
+
+-   Make a loading state
+
+```js
+const [loading, setLoading] = useState(false);
+```
+
+-   Set it to true if our validation checks pass
+
+```js
+// Disable the submit button
+setLoading(true);
+```
+
+-   Set it to false in the finally
+
+```js
+// Enable the submit button
+setLoading(false);
+```
+
+-   Now we can set the disabled property to match the loading state for our submit button, and the checkbox
+
+```js
+<form onSubmit={handleSubmit}>
+    <input
+        id='stream'
+        type='checkbox'
+        onChange={toggleChecked}
+        value={isStream}
+        disabled={loading}
+    />
+    // rest of form
+    <button
+        id='submit'
+        type='submit'
+        className='mt-4 w-full px-4 py-2 bg-blue-600 text-white rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500'
+        disabled={loading}
+    >
+        Submit✨
+    </button>
+</form>
+```
+
+-   Now to show they're disabled, we could simply copy/paste the styling, and conditionally render it...
+-   Or we could take advantage of DaisUI, and use their `btn` and `checkbox` classes.
+    -   If we hover over them, we can see they handle changing the styling while it's disabled for us
+
+```js
+<form onSubmit={handleSubmit}>
+    <input
+        id='stream'
+        type='checkbox'
+        className='checkbox checkbox-primary'
+        onChange={toggleChecked}
+        value={isStream}
+        disabled={loading}
+    />
+    <label htmlFor='stream'>Stream response?</label>
+    //textarea
+    <button
+        id='submit'
+        type='submit'
+        className='mt-4 w-full px-4 py-2 btn btn-primary'
+        disabled={loading}
+    >
+        Submit✨
+    </button>
+</form>
+```
+
+-   We clean up our classNames, and save some effort
+
+## Turning this into a full Chatbot
+
+-   Now it's up to you to turn this into a fully fledged chatbot!
+-   It's another big project, work incrementally
+-   Our demo of managing the message history yesterday can get you started, but there will be more considerations to be made
+-   DaisyUI conveniently has Chat Bubble components
+-   I'll add code highlighting to this example as a reference, and give links to the libraries I used
