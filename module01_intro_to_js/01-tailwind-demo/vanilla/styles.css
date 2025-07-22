@@ -1,60 +1,105 @@
-@import url('https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&display=swap');
 * {
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 body {
-    font-family: 'Archivo';
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #000000;
-    color: #fff;
-    padding: 1rem 3rem;
+  background-color: black;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 3rem;
+}
+a {
+  text-decoration: none;
+  color: white;
 }
 
-.header-start {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+.nav-start {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  p {
+    font-size: 1.5rem;
+    font-weight: 400;
+    margin-bottom: 0.25rem;
+    color: #fff;
+  }
 }
-h1 {
-    font-size: 1rem;
+
+.abstract-logo {
+  height: 2rem;
 }
 
 .hero {
-    min-height: 30vh;
-    display: flex;
-    flex-direction: column;
-    background-color: #dadbf1;
-    align-items: center;
-    justify-content: center;
+  background-color: #dadbf1;
+  height: 33vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+
+  h2 {
+    font-size: 4rem;
+  }
+  input {
+    padding: 0.4rem;
+    width: 50%;
+  }
 }
-.services {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 200px 200px 200px;
-    padding: 4rem;
-    gap: 2rem;
+
+/* .hero h2 {
+    font-size: 4rem;
+} */
+
+#services {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  padding: 5rem;
 }
 
 .service {
-    display: flex;
-    gap: 1rem;
-    line-height: 1.5;
+  display: flex;
+  width: 100%;
+  gap: 1rem;
+  img {
+    width: 3rem;
+    height: 3rem;
+  }
 }
 
-.service img {
-    height: 30%;
+.service-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  a {
+    color: #4c5fd5;
+  }
 }
 
-.service-text p {
-    font-size: 1.25rem;
+footer {
+  background-color: black;
+  color: white;
+  display: flex;
+  justify-content: space-around;
+  gap: 2rem;
+  padding: 2rem;
+  min-height: 33vh;
+  h3 {
+    font-size: 1.5rem;
+  }
+  ul {
+    list-style: none;
+  }
 }
-a {
-    text-decoration: none;
+
+.footer-end {
+  align-self: flex-end;
 }
