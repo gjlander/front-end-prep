@@ -359,3 +359,176 @@ It also won't be super clear in our examples, but `actions` also use a React fea
 ## Forms with useActionState
 
 - To give us the granular control we had before, with input specific errors, we'll need to use another new hook React 19 offers us, `useActionState`
+- Let's take a look at [the docs](https://react.dev/reference/react/useActionState)
+
+```js
+const [state, formAction, isPending] = useActionState(fn, initialState, permalink?);
+```
+
+- Breaking down the anatomy, in our return we get back three items in our array
+  - `state` - this is whatever we return from the Action. This can be an error message, meta data about the request, the newly created resource, or whatever we decide we want back
+  - `formAction` - this is the action that will be passed to the form
+  - `isPending` - this replaces our separate isPending state, and is managed by `useActionState`, so we no longer need to manually update it
+- `useActionState` requires 2 arguments and has an optional third
+
+  - `fn` - this is the function that we will use for our action
+  - `initialState` - just like `useState` you pass an initial state
+  - `permaLink` - an optional parameter to contain the unique URL that this form modifies. We won't be using it today
+
+- We can import `useActionState` from `react` and declare it, we need to pass our `submitAction` to it
+
+```js
+const [state, formAction, isPending] = useActionState(submitAction, {});
+
+ <form action={formAction} id='add-form' className='flex flex-col gap-6 w-3/4'>
+```
+
+- Now that our `action` is being passed to `useActionState`, the first argument is the previous sate (just like with `useState`)
+
+```js
+const submitAction = async (prevState, formData) => {};
+```
+
+- We also need our `action` to return something now. This could be lots of things, but let's return an object that has 2 properties:
+  - `error`: either `null` or our `validationErrors` object
+  - `success`: a boolean do indicate if the submission was successful or not
+
+```js
+const submitAction = async (prevState, formData) => {
+  const name = formData.get('name');
+  const imgUrl = formData.get('imgUrl');
+  const quote = formData.get('quote');
+
+  console.log({ name, imgUrl, quote });
+
+  const validationErrors = validateDuckForm({ name, imgUrl, quote });
+  console.log(validationErrors);
+  if (Object.keys(validationErrors).length !== 0) {
+    return { error: validationErrors, success: false };
+  }
+  await sleep(2000);
+  const newDuck = await createDuck({ name, imgUrl, quote });
+  toast.success("There's a new duck in your pond!");
+  setDucks(prev => [...prev, newDuck]);
+  return { error: null, success: true };
+};
+```
+
+- Since we have an `isPending` state from `useActionState`, we can bring back our button, and still have our conditional rendering
+
+```js
+<button type='submit' disabled={isPending} className='btn btn-success'>
+  {isPending ? (
+    <>
+      Adding duck... <span className='loading loading-spinner'></span>
+    </>
+  ) : (
+    'Add duck'
+  )}
+</button>
+```
+
+- We can also bring back our error messages (and add the `?` in case the property isn't there)
+
+```js
+<form action={formAction} id='add-form' className='flex flex-col gap-6 w-3/4'>
+          <label className='w-full flex gap-2 items-baseline'>
+            <span className='text-xl'>Name:</span>
+            <div className='w-full'>
+              <input
+                name='name'
+                type='text'
+                placeholder="What is your duck's name?"
+                className='bg-inherit border-solid border-2 border-slate-700 rounded-lg p-2 w-full'
+              />
+              {state.error?.name && <p className='text-red-500 text-sm'>{state.error.name}</p>}
+            </div>
+          </label>
+          <label className='w-full flex gap-2 items-baseline'>
+            <span className='text-xl'>Image:</span>
+            <div className='w-full'>
+              <input
+                name='imgUrl'
+                // type='url'
+                placeholder='What does your duck look like?'
+                className='bg-inherit border-solid border-2 border-slate-700 rounded-lg p-2 w-full'
+              />
+              {state.error?.imgUrl && <p className='text-red-500 text-sm'>{state.error.imgUrl}</p>}
+            </div>
+          </label>
+          <label className='w-full flex gap-2 items-baseline'>
+            <span className='text-xl'>Quote:</span>
+            <div className='w-full'>
+              <input
+                name='quote'
+                type='text'
+                placeholder='What does your duck say?'
+                className='bg-inherit border-solid border-2 border-slate-700 rounded-lg p-2 w-full'
+              />
+              {state.error?.quote && <p className='text-red-500 text-sm'>{state.error.quote}</p>}
+            </div>
+          </label>
+```
+
+- This means we can now remove our `ErrorBoundary`
+
+### Controlling our inputs to prevent form reset
+
+- The form will reset now, even when we have an error, which isn't great UX. There are several ways we could try and solve this, but the simplest would be to just control the inputs again
+
+```js
+ const [form, setForm] = useState({
+    name: '',
+    imgUrl: '',
+    quote: ''
+  });
+
+  const handleChange = e => {
+    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+    <label className='w-full flex gap-2 items-baseline'>
+          <span className='text-xl'>Name:</span>
+          <div className='w-full'>
+            <input
+              onChange={handleChange}
+              value={form.name}
+              name='name'
+              type='text'
+              placeholder="What is your duck's name?"
+              className='bg-inherit border-solid border-2 border-slate-700 rounded-lg p-2 w-full'
+            />
+            {state.error?.name && <p className='text-red-500 text-sm'>{state.error.name}</p>}
+          </div>
+        </label>
+        <label className='w-full flex gap-2 items-baseline'>
+          <span className='text-xl'>Image:</span>
+          <div className='w-full'>
+            <input
+              onChange={handleChange}
+              value={form.imgUrl}
+              name='imgUrl'
+              // type='url'
+              placeholder='What does your duck look like?'
+              className='bg-inherit border-solid border-2 border-slate-700 rounded-lg p-2 w-full'
+            />
+            {state.error?.imgUrl && <p className='text-red-500 text-sm'>{state.error.imgUrl}</p>}
+          </div>
+        </label>
+        <label className='w-full flex gap-2 items-baseline'>
+          <span className='text-xl'>Quote:</span>
+          <div className='w-full'>
+            <input
+              onChange={handleChange}
+              value={form.quote}
+              name='quote'
+              type='text'
+              placeholder='What does your duck say?'
+              className='bg-inherit border-solid border-2 border-slate-700 rounded-lg p-2 w-full'
+            />
+            {state.error?.quote && <p className='text-red-500 text-sm'>{state.error.quote}</p>}
+          </div>
+        </label>
+```
+
+- Is this simpler than the original? That's debatable, but by using actions - and by extension `useActionState` - you allow React to take advantage of modern features for a better UX. And even though these are meant to fit into the React as a fullstack framework paradigm, they're still relevant for us working with SPAs
