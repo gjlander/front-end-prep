@@ -2,17 +2,17 @@
 
 ## Agenda
 
--   Introduce [project](https://learn.wbscodingschool.com/courses/full-stack-web-app/lessons/%f0%9f%9b%a0%ef%b8%8f-figma-and-tailwind/)
--   Show [demo figma](<https://www.figma.com/design/cJMWiom7k05yqZVF5F5ztJ/Find-Your-Dream-Home-Website-UI-Template-(Community)?node-id=0-1&p=f&t=gQ05uju4g3KNtzt9-0>)
--   Review GitHub project start and workflow
+- Introduce [project](https://learn.wbscodingschool.com/courses/full-stack-web-app/lessons/module-project-figma-and-tailwindcss/topic/%f0%9f%9b%a0%ef%b8%8f-project-guidelines-and-requirements/)
+- Show [demo figma](<https://www.figma.com/design/cJMWiom7k05yqZVF5F5ztJ/Find-Your-Dream-Home-Website-UI-Template-(Community)?node-id=0-1&p=f&t=gQ05uju4g3KNtzt9-0>)
+- Review GitHub project start and workflow
 
 ## Project Info
 
--   Same same, but different. You'll be turning a figma design into an actual HTML page, but this time you'll use TailwindCSS to style it
--   You can either create your own figma design if you're feeling creative, or use one provided
--   Choose either desktop or mobile first design (provided figma is desktop first), then if time allows, make it responsive (but remember you can already do a lot by using percentage values!)
--   Your MVP is the landing page, but if there's time you could also consider adding an about or contact page
--   Several resources are linked at the bottom of the page - the Tailwind links can be especially helpful as you learn to navigate around the docs
+- Same same, but different. You'll be turning a figma design into an actual HTML page, but this time you'll use TailwindCSS to style it
+- You can either create your own figma design if you're feeling creative, or use one provided
+- Choose either desktop or mobile first design (provided figma is desktop first), then if time allows, make it responsive (but remember you can already do a lot by using percentage values!)
+- Your MVP is the landing page, but if there's time you could also consider adding an about or contact page
+- Several resources are linked at the bottom of the page - the Tailwind links can be especially helpful as you learn to navigate around the docs
 
 ## Project Setup and GitHub Workflow
 
@@ -21,18 +21,18 @@
 ### Setup the GitHub repo
 
 1. Create the initial structure, with the skeleton setup, which should include
-    - `index.html` docs with Tailwind CDN linked, and sections commented, and perhaps a basic skeleton layout
-    - empty `tailwind.config.js` file for IntelliSense
+   - `index.html` docs with Tailwind CDN linked, and sections commented, and perhaps a basic skeleton layout
+   - empty `tailwind.config.js` file for IntelliSense
 2. `git init`, `git add .`, `git commit -m "first commit"` to initialize the local Git repo
 3. Go to GitHub and create a new repo
-    - Your personal account should be the owner
-    - Make sure it is public
-    - Copy the "…or push an existing repository from the command line" commands and run them
+   - Your personal account should be the owner
+   - Make sure it is public
+   - Copy the "…or push an existing repository from the command line" commands and run them
 4. (New) On local, create dev branch and push it to GitHub. From now on, feature branches should merge into dev, and only dev should merge into main
 5. Add branch protections
-    - Protect `main` and `dev`
-    - Block force pushes
-    - Require a pull request before merging (0 or 1 depending on group consensus)
+   - Protect `main` and `dev`
+   - Block force pushes
+   - Require a pull request before merging (0 or 1 depending on group consensus)
 6. Invite other Group members as collaborators
 
 ### Collaborator and workflow

@@ -58,7 +58,7 @@ function App() {
 }
 ```
 
-### Let's move our DuckForm back into a separate page, like we had it in Vanilla HTML/JS
+### Let's move our DuckForm to the MyPond page for adding to localstorage
 
 - Make a new MyPond.jsx page
 - Copy over all of `Home`

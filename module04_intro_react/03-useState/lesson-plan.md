@@ -228,6 +228,31 @@ const handleSubmit = e => {
 ```
 
 - And boom! Our new duck appears! But only in state, no persistence yet
+- We can now use our state to validate the inputs, very similar to vanilla JS
+
+```js
+const handleSubmit = e => {
+  e.preventDefault();
+  try {
+    if (!form.name.trim()) {
+      throw new Error('Name is required');
+    }
+    if (!form.imgUrl.trim()) {
+      throw new Error('Image URL is required');
+    }
+    if (!form.quote.trim()) {
+      throw new Error('Quote is required');
+    }
+    const newDuck = { ...form, _id: crypto.randomUUID() };
+    console.log(newDuck);
+
+    setDucks(prev => [...prev, newDuck]);
+  } catch (error) {
+    alert(error.message);
+  }
+};
+```
+
 - Very last step is to reset our form state
 
 ```js

@@ -10,15 +10,28 @@ const DuckForm = ({ setDucks }) => {
   };
   const handleSubmit = e => {
     e.preventDefault();
-    const newDuck = { ...form, _id: crypto.randomUUID() };
-    console.log(newDuck);
+    try {
+      if (!form.name.trim()) {
+        throw new Error('Name is required');
+      }
+      if (!form.imgUrl.trim()) {
+        throw new Error('Image URL is required');
+      }
+      if (!form.quote.trim()) {
+        throw new Error('Quote is required');
+      }
+      const newDuck = { ...form, _id: crypto.randomUUID() };
+      console.log(newDuck);
 
-    setDucks(prev => [...prev, newDuck]);
-    setForm({
-      name: '',
-      imgUrl: '',
-      quote: ''
-    });
+      setDucks(prev => [...prev, newDuck]);
+      setForm({
+        name: '',
+        imgUrl: '',
+        quote: ''
+      });
+    } catch (error) {
+      alert(error.message);
+    }
   };
   return (
     <section onSubmit={handleSubmit} className='flex flex-col items-center gap-4 border-2 rounded-lg p-4 mx-8'>

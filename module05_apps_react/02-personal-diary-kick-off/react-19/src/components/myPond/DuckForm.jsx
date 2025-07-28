@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
+import { validateDuckForm } from '../../utils';
 const DuckForm = ({ setDucks }) => {
   const [form, setForm] = useState({
     name: '',
@@ -11,19 +12,6 @@ const DuckForm = ({ setDucks }) => {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const validateDuckForm = ({ name, imgUrl, quote }) => {
-    const newErrors = {};
-    if (!name.trim()) {
-      newErrors.name = 'Name is required';
-    }
-    if (!imgUrl.trim()) {
-      newErrors.imgUrl = 'Image URL is required';
-    }
-    if (!quote.trim()) {
-      newErrors.quote = 'Quote is required';
-    }
-    return newErrors;
-  };
   const handleSubmit = e => {
     e.preventDefault();
     try {

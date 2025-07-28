@@ -8,8 +8,8 @@ function App() {
   return (
     <div className='bg-slate-600 text-gray-300 flex flex-col min-h-screen'>
       <Navbar />
-      <Header />
       <main className='flex-grow flex flex-col justify-between py-4'>
+        <Header />
         <DuckPond />
         <DuckForm />
       </main>

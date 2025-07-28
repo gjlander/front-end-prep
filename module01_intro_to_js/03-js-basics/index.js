@@ -65,23 +65,23 @@ let weatherToday;
 let temp = 1;
 
 if (temp >= 20) {
-    let weatherToday = 'toasty';
-    weatherToday = 'warm';
-    const localConst = "I'm a local, not a tourist.";
-    // console.log(localConst);
+  let weatherToday = 'toasty';
+  weatherToday = 'warm';
+  const localConst = "I'm a local, not a tourist.";
+  // console.log(localConst);
 
-    //string concatenation
-    // console.log('The weather today is ' + weatherToday + '.');
+  //string concatenation
+  // console.log('The weather today is ' + weatherToday + '.');
 
-    //template literal
-    // console.log(`The weather today is ${weatherToday}.`);
+  //template literal
+  // console.log(`The weather today is ${weatherToday}.`);
 } else if (temp >= 10 && temp < 20) {
-    weatherToday = 'chilly';
-    // console.log(`The weather today is ${weatherToday}.`);
+  weatherToday = 'chilly';
+  // console.log(`The weather today is ${weatherToday}.`);
 } else if (temp > 0 && temp < 10) {
-    weatherToday = 'real cold';
+  weatherToday = 'real cold';
 } else {
-    console.log("I'm not sure of the weather weather today.");
+  console.log("I'm not sure of the weather weather today.");
 }
 
 // console.log(`The weather today is ${weatherToday}.`);
@@ -134,12 +134,12 @@ let characterClass = 'wizard';
 //FUNCTIONS //////////////////////////////////////////
 //declaration
 function sayHelloWorld() {
-    console.log('Hello world!');
+  console.log('Hello world!');
 }
 sayHelloWorld();
 
 function writeAMessage() {
-    return 'Hello world!';
+  return 'Hello world!';
 }
 
 const helloMessage = writeAMessage();
@@ -149,25 +149,25 @@ console.log(helloMessage);
 //expressions
 
 const goodByeWorld = function () {
-    console.log('Goodbye, cruel world!');
+  console.log('Goodbye, cruel world!');
 };
 goodByeWorld();
 
 //arrow functions
 const makeASandwich = () => {
-    console.log("Here's your sandwich!");
+  console.log("Here's your sandwich!");
 };
 
 makeASandwich();
 
-const square = (num) => {
-    return num * num;
+const square = num => {
+  return num * num;
 };
 
 console.log(square(7));
 
 const multiply = (num1, num2 = 8) => {
-    return num1 * num2;
+  return num1 * num2;
 };
 console.log(multiply(5, 6));
 console.log(multiply(5));

@@ -70,7 +70,7 @@ console.log(20 + 5);
 
 - store addition in a variable, and log it
 
-### JavaScript is weakly typed, and synchronous
+### JavaScript is dynamically typed, and synchronous
 
 - This means don't have to declare a data type, and can reassign to a different one
 
@@ -82,7 +82,7 @@ console.log(20 + 5);
 
 ## Arithmetic - Go to LMS (slide 6)
 
-- Make note of incrementors and += syntax
+- Make note of incrementor and += syntax
 
 ## Comparisons - Go to LMS (slide 8)
 

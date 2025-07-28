@@ -298,14 +298,60 @@ const newDuck = {
 console.log(newDuck);
 ```
 
-- Let's also reset the form inputs so those don't linger, and add simple validation. Because empty strings are falsy, we can check for them
+#### Form validation and reset
+
+- We only want the form to submit if all our our required fields are filled out. Rather than relying on HTML (which can be easily overwritten) we can add some basic validation ourselves
+
+- Because empty strings are falsy, we can check for them. We'll also use the `trim()` method to remove whitespace
+- If something required is missing, we can throw an error with a descriptive message
 
 ```js
-if (!name.value || !imgUrl.value || !quote.value) {
-  alert('Please fill in required fields!');
-  return;
+if (!name.value.trim()) {
+  throw new Error('Name is required');
 }
+if (!imgUrl.value.trim()) {
+  throw new Error('Image URL is required');
+}
+if (!quote.value.trim()) {
+  throw new Error('Quote is required');
+}
+```
 
+- Now if we submit with an empty field, we get an `Uncaught Error`. We'll use a try/catch block to handle the error
+
+```js
+try {
+  if (!name.value.trim()) {
+    throw new Error('Name is required');
+  }
+  if (!imgUrl.value.trim()) {
+    throw new Error('Image URL is required');
+  }
+  if (!quote.value.trim()) {
+    throw new Error('Quote is required');
+  }
+  const newDuck = {
+    _id: ducksInThePond.length,
+    name: name.value,
+    imgUrl: imgUrl.value,
+    quote: quote.value
+  };
+
+  console.log(newDuck);
+} catch (error) {}
+```
+
+- Now if an error is thrown, we can have our logic in the catch block, we'll simply show an alert with the error message
+
+```js
+catch (error) {
+    alert(error.message);
+  }
+```
+
+- As a final touch, we can reset the form to clear all inputs on success
+
+```js
 e.target.reset();
 ```
 

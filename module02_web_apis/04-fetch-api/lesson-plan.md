@@ -193,23 +193,28 @@ addForm.addEventListener('submit', async e => {
   const imgUrl = addForm.querySelector('#img-url');
   const quote = addForm.querySelector('#quote');
 
-  if (!name.value || !imgUrl.value || !quote.value) {
-    alert('Please fill in required fields!');
-    return;
-  }
-
-  const newDuck = {
-    name: name.value,
-    imgUrl: imgUrl.value,
-    quote: quote.value
-  };
-
   try {
+    if (!name.value.trim()) {
+      throw new Error('Name is required');
+    }
+    if (!imgUrl.value.trim()) {
+      throw new Error('Image URL is required');
+    }
+    if (!quote.value.trim()) {
+      throw new Error('Quote is required');
+    }
+
+    const newDuck = {
+      name: name.value,
+      imgUrl: imgUrl.value,
+      quote: quote.value
+    };
     const duckData = await createDuck(newDuck);
     renderSingleDuck(duckData, pond);
     e.target.reset();
   } catch (error) {
     console.error(error);
+    alert(error.message);
   }
 });
 ```
