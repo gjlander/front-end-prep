@@ -88,7 +88,7 @@ const getDuckById = async (id, abortCont) => {
 };
 
 const createDuck = async newDuck => {
-  const res = await fetch('https://duckpond-89zn.onrender.com/wild-ducks', {
+  const res = await fetch('https://duckpond-89zn.onrender.com/wild-duckss', {
     method: 'POST',
     headers: { 'Content-type': 'application/json' },
     body: JSON.stringify(newDuck)

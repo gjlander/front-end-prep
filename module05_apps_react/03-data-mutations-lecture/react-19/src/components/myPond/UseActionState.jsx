@@ -15,14 +15,19 @@ const DuckForm = ({ setDucks }) => {
     if (Object.keys(validationErrors).length !== 0) {
       return { error: validationErrors, success: false };
     }
-    await sleep(2000);
-    const newDuck = await createDuck({ name, imgUrl, quote });
-    toast.success("There's a new duck in your pond!");
-    setDucks(prev => [...prev, newDuck]);
-    return { error: null, success: true };
+    try {
+      await sleep(2000);
+      const newDuck = await createDuck({ name, imgUrl, quote });
+      toast.success("There's a new duck in your pond!");
+      setDucks(prev => [...prev, newDuck]);
+      return { error: null, success: true };
+    } catch (error) {
+      toast.error(error.message || 'Something went wrong!');
+      return { error: null, success: false };
+    }
   };
 
-  const [state, formAction, isPending] = useActionState(submitAction, {});
+  const [state, formAction, isPending] = useActionState(submitAction, { error: null, success: false });
   const [form, setForm] = useState({
     name: '',
     imgUrl: '',
@@ -49,7 +54,7 @@ const DuckForm = ({ setDucks }) => {
               placeholder="What is your duck's name?"
               className='bg-inherit border-solid border-2 border-slate-700 rounded-lg p-2 w-full'
             />
-            {state.error?.name && <p className='text-red-500 text-sm'>{state.error.name}</p>}
+            {state.error?.name && <p className='text-red-500 text-sm'>{state.error?.name}</p>}
           </div>
         </label>
         <label className='w-full flex gap-2 items-baseline'>
@@ -63,7 +68,7 @@ const DuckForm = ({ setDucks }) => {
               placeholder='What does your duck look like?'
               className='bg-inherit border-solid border-2 border-slate-700 rounded-lg p-2 w-full'
             />
-            {state.error?.imgUrl && <p className='text-red-500 text-sm'>{state.error.imgUrl}</p>}
+            {state.error?.imgUrl && <p className='text-red-500 text-sm'>{state.error?.imgUrl}</p>}
           </div>
         </label>
         <label className='w-full flex gap-2 items-baseline'>
@@ -77,7 +82,7 @@ const DuckForm = ({ setDucks }) => {
               placeholder='What does your duck say?'
               className='bg-inherit border-solid border-2 border-slate-700 rounded-lg p-2 w-full'
             />
-            {state.error?.quote && <p className='text-red-500 text-sm'>{state.error.quote}</p>}
+            {state.error?.quote && <p className='text-red-500 text-sm'>{state.error?.quote}</p>}
           </div>
         </label>
         <button type='submit' disabled={isPending} className='btn btn-success'>

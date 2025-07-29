@@ -378,7 +378,7 @@ const [state, formAction, isPending] = useActionState(fn, initialState, permalin
 - We can import `useActionState` from `react` and declare it, we need to pass our `submitAction` to it
 
 ```js
-const [state, formAction, isPending] = useActionState(submitAction, {});
+const [state, formAction, isPending] = useActionState(submitAction, {error: null, success: false});
 
  <form action={formAction} id='add-form' className='flex flex-col gap-6 w-3/4'>
 ```
@@ -471,6 +471,42 @@ const submitAction = async (prevState, formData) => {
 ```
 
 - This means we can now remove our `ErrorBoundary`
+
+### Handling server errors with a try/catch block
+
+- Our validation errors are being handled now, but what if there's an actual error on the server side?
+- Let's simulate one by adding a typo to the URL
+- Our app crashes again, so our options are
+  - bring back the `ErrorBoundary`
+  - use a `try/catch` block
+- If we want to use a fallback UI, `ErrorBoundary` would make sense, but we just want a toast message, so let's use a `try/catch` block
+  - we need to make sure we still return the basic structure of our state
+
+```js
+const submitAction = async (prevState, formData) => {
+  const name = formData.get('name');
+  const imgUrl = formData.get('imgUrl');
+  const quote = formData.get('quote');
+
+  console.log({ name, imgUrl, quote });
+
+  const validationErrors = validateDuckForm({ name, imgUrl, quote });
+  console.log(validationErrors);
+  if (Object.keys(validationErrors).length !== 0) {
+    return { error: validationErrors, success: false };
+  }
+  try {
+    await sleep(2000);
+    const newDuck = await createDuck({ name, imgUrl, quote });
+    toast.success("There's a new duck in your pond!");
+    setDucks(prev => [...prev, newDuck]);
+    return { error: null, success: true };
+  } catch (error) {
+    toast.error(error.message || 'Something went wrong!');
+    return { error: null, success: false };
+  }
+};
+```
 
 ### Controlling our inputs to prevent form reset
 
