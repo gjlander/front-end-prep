@@ -1,8 +1,11 @@
 import { useActionState, useState } from 'react';
 import { toast } from 'react-toastify';
+import { useDucks } from '../../context';
 import { createDuck } from '../../data';
 import { validateDuckForm, sleep } from '../../utils';
-const DuckForm = ({ setDucks }) => {
+
+const DuckForm = () => {
+  const { setDucks } = useDucks();
   const submitAction = async (prevState, formData) => {
     const name = formData.get('name');
     const imgUrl = formData.get('imgUrl');

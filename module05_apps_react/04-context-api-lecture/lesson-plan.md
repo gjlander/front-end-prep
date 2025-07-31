@@ -1,47 +1,7 @@
 # Context API
 
 - When you have a piece of state ( or any data) that's needed in several parts of your application, passing deeply nested state can become annoying
-- To solve that issue, React has the Context API. The nice thing is, you've already been working with a version of it - useOutletContext is using Context under the hood, and works in basically the same way
-
-## using Outlet Context
-
-- in `MainLayout.jsx` we create some state related to authentication
-- Because the Navbar exists outside of the Outlet, we still pass via props. You could say, being outside of the Outlet, it's outside of the context provider.
-  - This means that there is a boundary to where the context can be used
-- Inside of our context provider (in this case, the Outlet), we pass everything we need as an object to `context`
-
-```js
-<Outlet
-  context={{
-    signedIn,
-    setSignedIn,
-    user,
-    setUser,
-    setCheckSession
-  }}
-/>
-```
-
-- Then, instead of passing props, any component nested inside of Outlet can access the data directly if they need it by using `useOutletContext` and deconstructing the needed values
-- `Signin.jsx`
-
-```js
-import { useState } from 'react';
-import { Link, useOutletContext, Navigate } from 'react-router';
-import { signIn } from '../data/auth';
-const SignIn = () => {
-  const [{ email, password }, setForm] = useState({
-    email: '',
-    password: ''
-  });
-  const [loading, setLoading] = useState(false);
-  const { signedIn, setSignedIn, setCheckSession } = useOutletContext();
-  // rest of component...
-};
-```
-
-- Using Context you wire up yourself will work in almost exactly the same way. The only tricky part is how to wire up your own context
-- Before we refactor our duckpond to use a self-made context, instead of relying on React Router, let's look at a basic example from the playground
+- To solve that issue, React has the Context API. This is what was working under the hood to make `useOutletContext` work
 
 ## Local Playground example
 
@@ -51,14 +11,14 @@ const SignIn = () => {
 ## Prop Drilling
 
 - I've used this word before, but I don't think I've proper explained it
-- We have defined a `user` in `App`, and we need access to that data in `NoContextGranChild`. Let's say, for whatever reason, that data is needed in other component trees, so we can't move it close to the component that needs it.
+- We have defined a `user` in `App`, and we need access to that data in `NoContextGranChild`. Let's say, for whatever reason, that data is needed in other component trees, so we can't move it closer to the component that needs it.
 - Our solution then, is to pass it as props to the `NoContextParent`
 
 ```js
 <NoContextParent user={user} />
 ```
 
-- Our `NoContextParent` doesn't need it, so it just passed it along to the `NoContextChild`
+- Our `NoContextParent` doesn't need it, so it's just passed it along to the `NoContextChild`
 
 ```js
 const NoContextParent = ({ user }) => {
@@ -91,7 +51,9 @@ const NoContextChild = ({ user }) => {
 
 - The Context API has two main functions
   - createContext allows us to create the context object itself
-  - useContext hook allows us to access the value of the context object
+  - use hook allows us to access the value of the context object
+    - `use` was introduced in React 19 and has a dual purpose of consuming Promises and context
+    - `useContext` was used before React 19, and is still usable, but we will default to using `use`
 - So, in `App.jsx`, we first have to create the UserContext ( and export it)
 
 ```js
@@ -109,9 +71,9 @@ export const UserContext = createContext();
 ```
 
 - Now we can follow the tree down, and since those parent components don't need the data, they don't concern themselves with it
-- Then in the GrandChild, we need to import the UserContext itself from `App.js` and useContext from react
+- Then in the GrandChild, we need to import the UserContext itself from `App.jsx` and use from react
 - We pass the UserContext as an argument to useContext, and can access the value
-  - Since it is a single value, we don't have to deconstruct
+  - Since it is a single value, we don't have to destructure
 
 ```js
 import { use } from 'react';
@@ -131,14 +93,14 @@ export default ContextGranChild;
 
 #### Questions about this basic setup before we transition to the Duckpond?
 
-## Creating an AuthContext
+## Creating a DuckContext
 
-- Let's refactor our DuckPond to use our own AuthContext, instead of the Outlet
+- Currently we have a `ducks` state in `Home.jsx` and a `myDucks` state in `MyPond.jsx`. Since our form isn't saving to local storage anymore, let's unify that into one state that can be used across our app
 
 ### Create a new context folder, and create our new context
 
 - Make `context` folder
-- Make `context.js`
+- Make `index.js`
 
 ```js
 import { createContext } from 'react';
@@ -148,175 +110,220 @@ const AuthContext = createContext();
 export { AuthContext };
 ```
 
-- Now back in `MainLayout.jsx`, we import the AuthContext, and wrap our whole application in the provider
+- Now back in `MainLayout.jsx`, we import the DuckContext, and wrap our whole application in it
 
 ```js
-import { AuthContext } from '../context/context';
-// other stuff...
-<AuthContext.Provider>
-  <div className='bg-slate-600 text-gray-300 flex flex-col min-h-screen'>
-    <Navbar signedIn={signedIn} setSignedIn={setSignedIn} user={user} setUser={setUser} />
-    <main className='flex-grow flex flex-col justify-between py-4'>
-      <Outlet
-        context={{
-          signedIn,
-          setSignedIn,
-          user,
-          setUser,
-          setCheckSession
-        }}
-      />
-    </main>
-    <Footer />
-  </div>
-</AuthContext.Provider>;
+import { Outlet } from 'react-router';
+import { ToastContainer } from 'react-toastify';
+import { DuckContext } from '../context';
+import { Navbar, Footer } from '../components';
+
+const MainLayout = () => {
+  return (
+    <DuckContext>
+      <div className='bg-slate-600 text-gray-300 flex flex-col min-h-screen'>
+        <Navbar />
+        <main className='flex-grow flex flex-col justify-between py-4'>
+          <Outlet />
+        </main>
+        <Footer />
+        <ToastContainer />
+      </div>
+    </DuckContext>
+  );
+};
+
+export default MainLayout;
 ```
 
-- Now that our Navbar is inside the provider, we can get rid of the props, and we can get rid of the context on our Outlet. We can now pass that same object as value to our Provider
+- Now let's initialize our `ducks` state in `MainLayout.jsx` instead of `Home.jsx`
 
 ```js
-<AuthContext.Provider
-  value={{
-    signedIn,
-    setSignedIn,
-    user,
-    setUser,
-    setCheckSession
-  }}
->
-  <div className='bg-slate-600 text-gray-300 flex flex-col min-h-screen'>
-    <Navbar
-    // signedIn={signedIn}
-    // setSignedIn={setSignedIn}
-    // user={user}
-    // setUser={setUser}
-    />
-    <main className='flex-grow flex flex-col justify-between py-4'>
-      <Outlet
-      // context={{
-      //     signedIn,
-      //     setSignedIn,
-      //     user,
-      //     setUser,
-      //     setCheckSession,
-      // }}
-      />
-    </main>
-    <Footer />
-  </div>
-</AuthContext.Provider>
-```
+import { useState, useEffect } from 'react';
+import { Outlet } from 'react-router';
+import { ToastContainer } from 'react-toastify';
+import { getAllDucks } from '../data';
+import { DuckContext } from '../context';
+import { Navbar, Footer } from '../components';
 
-- Everything will break for a bit, so let's fix things one component at a time
-- `Navbar.jsx`
-- We no longer need to pass props, we can use our context
+const MainLayout = () => {
+  const [ducks, setDucks] = useState([]);
+  useEffect(() => {
+    const abortController = new AbortController();
+    (async () => {
+      try {
+        const allDucks = await getAllDucks(abortController);
 
-```js
-import { useContext } from 'react';
-import { AuthContext } from '../context/context';
-import { Link, NavLink, useNavigate } from 'react-router';
-//nothing new here, just accessing the props
-const Navbar = (/*{ signedIn, setSignedIn, user, setUser }*/) => {
-  const { signedIn, setSignedIn, user, setUser } = useContext(AuthContext);
-  // rest of component...
+        setDucks(allDucks);
+      } catch (error) {
+        if (error.name === 'AbortError') {
+          console.info('Fetch aborted');
+        } else {
+          console.error(error);
+        }
+      }
+    })();
+
+    return () => {
+      abortController.abort();
+    };
+  }, []);
+  // jsx...
 };
 ```
 
-- `Signin.jsx`
-- This one is even easier, import AuthContext and useContext, and replace `useOutletContext`
+- Then we pass our duck state and setter as `value` to our `DuckContext`
+
+  - Since we're passing several values now, we'll use the double `{}` syntax to pass them as an object
 
 ```js
-import { useState, useContext } from 'react';
-import { Link, Navigate } from 'react-router';
-import { AuthContext } from '../context/context';
-import { signIn } from '../data/auth';
-const SignIn = () => {
-  const [{ email, password }, setForm] = useState({
-    email: '',
-    password: ''
-  });
-  const [loading, setLoading] = useState(false);
-  const { signedIn, setSignedIn, setCheckSession } = useContext(AuthContext);
-  // rest of component...
+ <DuckContext value={{ ducks, setDucks }}>
+```
+
+- Now back in `Home.jsx` we can clear out the state and useEffect, and since `Home` doesn't need the state anyway, we can move directly into `DuckPond` instead of passing props (we can do this since we won't use the `myDucks` state anymore either, otherwise we would still pass it as props to `DuckPond`)
+- For that we'll need to import
+  - `use` from React
+  - `DuckContext` from `../context`
+
+```js
+import { use } from 'react';
+import { Link } from 'react-router';
+import { DuckContext } from '../../context';
+import DuckCard from './DuckCard';
+```
+
+- Then call `use` and pass our `DuckContext` as an argument and store the return in a variable
+
+```js
+const DuckPond = () => {
+  const context = use(DuckContext);
+  console.log(context);
+  return (
+    <section id='pond' className='flex justify-center flex-wrap gap-4 p-4 w-full'>
+      {/* {ducks.map(duck => (
+        <Link key={duck._id} to={`ducks/${duck._id}`}>
+          <DuckCard {...duck} />
+        </Link>
+      ))} */}
+    </section>
+  );
 };
 ```
 
-- `MyPond.jsx`
+- In the logs, we see that we now have an object with a `ducks` and `setDucks` property, exactly what we'd expect based on the `value` we passed
+- Since we're only concerned with our state, we can destructure it right away, and use it
 
 ```js
-import { useState, useContext } from 'react';
-import { Navigate } from 'react-router';
-import { AuthContext } from '../context/context';
-import DuckPond from '../components/DuckPond';
-import DuckForm from '../components/DuckForm';
+const DuckPond = () => {
+  const { ducks } = use(DuckContext);
+  // console.log(context);
+  return (
+    <section id='pond' className='flex justify-center flex-wrap gap-4 p-4 w-full'>
+      {ducks.map(duck => (
+        <Link key={duck._id} to={`ducks/${duck._id}`}>
+          <DuckCard {...duck} />
+        </Link>
+      ))}
+    </section>
+  );
+};
+```
+
+- Since we're recycling this component in `MyPond`, we can also see it working there
+
+### Passing our setter
+
+- Now in `MyPond` we can clear out our `myDucks` state, and remove `setDucks` from props
+
+```js
+import { DuckPond, UseActionState } from '../components';
 
 const MyPond = () => {
-  const [myDucks, setMyDucks] = useState(JSON.parse(localStorage.getItem('myDucks')) || []);
-  const { signedIn } = useContext(AuthContext);
+  return (
+    <>
+      <DuckPond />
+      <UseActionState />
+    </>
+  );
+};
+
+export default MyPond;
+```
+
+- And in `DuckForm/UseActionState` we consume the context instead of relying on props
+
+```js
+import { useActionState, useState, use } from 'react';
+import { toast } from 'react-toastify';
+import { DuckContext } from '../../context';
+import { createDuck } from '../../data';
+import { validateDuckForm, sleep } from '../../utils';
+
+const DuckForm = () => {
+  const { setDucks } = use(DuckContext);
   // rest of component...
 };
 ```
-
-- Now everything works again!
 
 ### This technically works, and we could stop here and have a function app with context. But there's a couple of improvement we can make in organizing our code
 
-## Creating a custom useAuth hook
+## Creating a custom useDucks hook
 
-- You may have noticed we now need to import 2 things into every component we want to use our AuthContext in
-  - useContext from 'react'
-  - AuthContext from our context file
+- You may have noticed we now need to import 2 things into every component we want to use our DuckContext in
+  - use from 'react'
+  - DuckContext from our context file
 - Not the end of the world, but since these 2 things are needed EVERY time we want to use the context, we can create a custom hook to handle that for us
-- `context.js`
+- `context/index.js`
 
 ```js
-import { createContext, useContext } from 'react';
+import { createContext, use } from 'react';
 
-const AuthContext = createContext();
+const DuckContext = createContext();
 
-const useAuth = () => {
-  const context = useContext(AuthContext);
+const useDucks = () => {
+  const context = use(DuckContext);
   return context;
 };
 
-export { AuthContext, useAuth };
+export { DuckContext, useDucks };
 ```
 
-- Since this can only be used inside of the AuthContextProvider, let's throw an Error if they try to use it outside
+- Since this can only be used inside of the DuckContext, let's throw an Error if they try to use it outside
 
 ```js
-const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) throw new Error('useAuth must be used within an AuthContextProvider');
+const useDucks = () => {
+  const context = use(DuckContext);
+  if (!context) throw new Error('useDucks must be used within a DuckContext');
   return context;
 };
 ```
 
-- Now we can update `Navbar`, `Signin`, and `MyPond` to use this custom hook
-- `Navbar.jsx`
+- Now we can update `DuckPond` and `UseActionState/DuckForm` to use our custom hook
+- `DuckPond.jsx`
 
 ```js
-import { useAuth } from '../context/context';
-import { Link, NavLink, useNavigate } from 'react-router';
-const Navbar = (/*{ signedIn, setSignedIn, user, setUser }*/) => {
-  const { signedIn, setSignedIn, user, setUser } = useAuth();
+import { Link } from 'react-router';
+import { useDucks } from '../../context';
+import DuckCard from './DuckCard';
+
+const DuckPond = () => {
+  const { ducks } = useDucks();
+  // rest of component...
 };
 ```
 
-- `Signin.jsx`
+- `UseActionState.jsx`
 
 ```js
-import { useState } from 'react';
-import { Link, Navigate } from 'react-router';
-import { useAuth } from '../context/context';
-import { signIn } from '../data/auth';
-const SignIn = () => {
-  const [{ email, password }, setForm] = useState({
-    email: '',
-    password: ''
-  });
-  const [loading, setLoading] = useState(false);
-  const { signedIn, setSignedIn, setCheckSession } = useAuth();
+import { useActionState, useState } from 'react';
+import { toast } from 'react-toastify';
+import { useDucks } from '../../context';
+import { createDuck } from '../../data';
+import { validateDuckForm, sleep } from '../../utils';
+
+const DuckForm = () => {
+  const { setDucks } = useDucks();
+  // rest of component...
 };
 ```
 
@@ -337,73 +344,82 @@ const MyPond = () => {
 
 ### This is nice, but our MainLayout is a bit cluttered...
 
-## Created a separate AuthProvider
+## Created a separate DuckProvider
 
-- Now that we're using our own context, there's no real reason to have all of our Auth logic in our MainLayout
-- Our MainLayout should only be concerned with rendering the layout, so let's modularize our code by creating a special `AuthContextProvider` component
-- Make `AuthContextProvider.jsx` inside `context` folder
-- Move all of our auth logic in there
+- Our MainLayout should only be concerned with rendering the layout, so let's modularize our code by creating a special `DuckProvider` component
+- Make `DuckProvider.jsx` inside `context` folder
+- Move all of our duck logic in there
 
 ```js
 import { useState, useEffect } from 'react';
-import { AuthContext } from '../context/context';
-import { me } from '../data/auth';
-const AuthContextProvider = () => {
-  const [signedIn, setSignedIn] = useState(false);
-  const [user, setUser] = useState();
-  const [checkSession, setCheckSession] = useState(true);
 
+import { getAllDucks } from '../data';
+import { DuckContext } from '../context';
+
+const DuckProvider = () => {
+  const [ducks, setDucks] = useState([]);
   useEffect(() => {
-    const getUser = async () => {
+    const abortController = new AbortController();
+    (async () => {
       try {
-        const data = await me();
+        const allDucks = await getAllDucks(abortController);
 
-        setUser(data);
-        setSignedIn(true);
+        setDucks(allDucks);
       } catch (error) {
-        console.error(error);
-      } finally {
-        setCheckSession(false);
+        if (error.name === 'AbortError') {
+          console.info('Fetch aborted');
+        } else {
+          console.error(error);
+        }
       }
-    };
+    })();
 
-    if (checkSession) getUser();
-  }, [checkSession]);
-  return (
-    <AuthContext.Provider
-      value={{
-        signedIn,
-        setSignedIn,
-        user,
-        setUser,
-        setCheckSession
-      }}
-    ></AuthContext.Provider>
-  );
+    return () => {
+      abortController.abort();
+    };
+  }, []);
+  return <DuckContext value={{ ducks, setDucks }}></DuckContext>;
 };
 
-export default AuthContextProvider;
+export default DuckProvider;
+```
+
+- import and re-export it from `index.js`
+
+```js
+import { createContext, use } from 'react';
+import DuckProvider from './DuckProvider';
+const DuckContext = createContext();
+
+const useDucks = () => {
+  const context = use(DuckContext);
+  if (!context) throw new Error('useDucks must be used within a DuckContext');
+  return context;
+};
+
+export { DuckContext, useDucks, DuckProvider };
 ```
 
 - Now we can wrap our whole application in this provider
 
 ```js
 import { Outlet } from 'react-router';
-import AuthContextProvider from '../context/AuthContextProvider';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+import { ToastContainer } from 'react-toastify';
+import { DuckProvider } from '../context';
+import { Navbar, Footer } from '../components';
 
 const MainLayout = () => {
   return (
-    <AuthContextProvider>
+    <DuckProvider>
       <div className='bg-slate-600 text-gray-300 flex flex-col min-h-screen'>
         <Navbar />
         <main className='flex-grow flex flex-col justify-between py-4'>
           <Outlet />
         </main>
         <Footer />
+        <ToastContainer />
       </div>
-    </AuthContextProvider>
+    </DuckProvider>
   );
 };
 
@@ -414,48 +430,26 @@ export default MainLayout;
 - We still have to render what's between the provider
 
 ```js
-<AuthContext.Provider
-  value={{
-    signedIn,
-    setSignedIn,
-    user,
-    setUser,
-    setCheckSession
-  }}
->
-  <div>Where is my stuff?</div>
-</AuthContext.Provider>
+<DuckContext value={{ ducks, setDucks }}>
+  <div>Where's my stuff?</div>
+</DuckContext>
 ```
 
 - Because we have children nested inside of the component, it gives us access to a special React prop - `children`
 - If we pass `children` as a prop, then render it, everything that's nested will get rendered
 
 ```js
-const AuthContextProvider = ({ children }) => {
-  // app logic
-  return (
-    <AuthContext.Provider
-      value={{
-        signedIn,
-        setSignedIn,
-        user,
-        setUser,
-        setCheckSession
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
+const DuckProvider = ({ children }) => {
+  // app logic...
+  return <DuckContext value={{ ducks, setDucks }}>{children}</DuckContext>;
 };
-
-export default AuthContextProvider;
 ```
 
 - Now everything's back!
 
 ## Notes on Context
 
-- When a state from the context provider tree changes, it rerenders the whole tree, so this doesn't improve performance of prop drilling
+- When a state from the context provider tree changes, it rerenders the whole tree, so this doesn't improve performance over prop drilling
 - For more complex applications, it could be worth looking into a state management library (after the bootcamp)
 - Context is mainly about writing scalable, and maintainable code
 - Most useful when something is needed in deeply nested components AND several places
