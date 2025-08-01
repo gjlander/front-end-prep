@@ -265,3 +265,102 @@ const users: User[] = [
   { name: 'Grace', age: 30 }
 ];
 ```
+
+#### Go to when to use interface in [LMS article](https://learn.wbscodingschool.com/courses/software-engineering/lessons/advanced-types-and-functions/topic/%f0%9f%93%9a-type-aliases-and-interfaces/)
+
+### Type intersections and Interface Extensions
+
+- Sometimes you have some base properties that you want to include in other objects as well
+- Say for example you're working with items from your database, and everything will have an `_id` and `createdAt` property
+- You can declare your type
+
+```ts
+type DBEntry = {
+  _id: string;
+  createdAt: string;
+};
+```
+
+- Then use type intersections to reuse it
+
+```ts
+type DBUser = DBEntry & {
+  name: string;
+  email: string;
+  password: string;
+};
+```
+
+- Then TS will enforce a user with both types and complain if something from either is missing
+
+```ts
+const user: DBUser = {
+  _id: '123fhgksaw',
+  name: 'Steve Rogers',
+  email: 'captain@america.com',
+  createdAt: '2025-08-01',
+  password: 'stevepass'
+};
+```
+
+- We can use the same principle with interfaces by using `extends`
+
+```ts
+interface DBEntryInterface {
+  _id: string;
+  createdAt: string;
+}
+
+interface DBUserInterface extends DBEntryInterface {
+  name: string;
+  email: string;
+  password: string;
+}
+
+const user2: DBUserInterface = {
+  _id: '123fhgksaw',
+  name: 'Steve Rogers',
+  email: 'captain@america.com',
+  createdAt: '2025-08-01',
+  password: 'stevepass'
+};
+```
+
+- As noted in the LMS, `extends` is can be compiled faster, but that shouldn't be a major concern for us, so we'll still default to type aliases and type intersection
+
+## Mapped Object - go to LMS example
+
+## Literal Unions
+
+- In addition to more general type unions, we can also use literal unions. This is really nice when you know there are a limited set of options to choose from
+- Go over LMS example
+
+## Function types
+
+- You can also create a type alias for the shape of a function. If you have a set of functions that all need to fit a certain requirement (for example, a React functional component always has to return JSX)
+- The syntax looks like an arrow function one-liner
+  - you type the parameters, and the return
+- If want want to have a class of calculator functions, we could define the shape
+
+```ts
+type Calculation = (num1: number, num2: number) => number;
+
+const add: Calculation = (a, b) => a + b;
+
+const subtract: Calculation = (a, b) => a - b;
+
+add('4', 4);
+```
+
+- Go to chart in the LMS about use cases
+
+#### In addition to the Function Cardio exercise, you now have the tools needed to refactor the rest of the exercises from Module 1 into TS
+
+- There is an @ rule for ts to expect an error on the next line, that is used in the exercise to test if your types are in place correctly to cause an error with improper usage
+
+- js arrays i
+- js objects i
+- js arrays ii
+  bonus
+- baby array cardio
+- array cardio

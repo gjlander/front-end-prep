@@ -15,7 +15,7 @@
 - A modern js setup
 - Refactoring old exercises
 
-## What is js?
+## What is TS?
 
 - Walk through article until **Why does Typescript matter?**
 
@@ -32,7 +32,7 @@ num = 'Not anymore!';
 
 - As mentioned, not all programming languages are like this, in fact many aren't. They require you do declare what type the variable is when you declare it, and will throw an error if you try to reassign it. This (along with some other features) is what js adds to js ad shown in the [docs](https://www.typescriptlang.org/)
 
-- This makes js a superset of js, it doesn't remove anything from js, only adds. And in fact, gejs compiled (or technically transpiled) into js
+- This makes js a superset of js, it doesn't remove anything from js, only adds. And in fact, gets compiled (or technically transpiled) into js
 
 ### Why
 
@@ -238,6 +238,29 @@ const isOldEnough = (age: number): string => {
     return 'You are not old enough';
   }
 };
+```
+
+- You can make a parameter optional by adding a `?`
+
+```ts
+const logMessage = (message: string, userId?: number): void => {
+  console.log(`${message} ${userId ? `From user ${userId}` : ''}`);
+};
+
+logMessage('Hello there!');
+logMessage('Something', 4);
+```
+
+- Just as with Vanilla JS, you can also set a default value (this will also automatically make it optional)
+  - important to note that optional/default parameters need to go after required parameters
+
+```ts
+const greetUser = (name: string = 'guest'): string => {
+  return `Welcome, ${name}!`;
+};
+
+console.log(greetUser()); // Welcome, guest!
+console.log(greetUser('Ada')); // Welcome, Ada!
 ```
 
 #### We'll spend the rest of the module diving deeper into TS. For today work through the tutorials, and refactor the js-basics exercises from Module 1 into TS - you'll find that you don't need to add much!

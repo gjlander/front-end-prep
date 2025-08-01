@@ -67,3 +67,49 @@ console.log(users);
 users.forEach(user => {
   console.log(`${user.name} is ${user.age} years old`);
 });
+
+type DBEntry = {
+  _id: string;
+  createdAt: string;
+};
+
+type DBUser = DBEntry & {
+  name: string;
+  email: string;
+  password: string;
+};
+
+const user: DBUser = {
+  _id: '123fhgksaw',
+  name: 'Steve Rogers',
+  email: 'captain@america.com',
+  createdAt: '2025-08-01',
+  password: 'stevepass'
+};
+
+interface DBEntryInterface {
+  _id: string;
+  createdAt: string;
+}
+
+interface DBUserInterface extends DBEntryInterface {
+  name: string;
+  email: string;
+  password: string;
+}
+
+const user2: DBUserInterface = {
+  _id: '123fhgksaw',
+  name: 'Steve Rogers',
+  email: 'captain@america.com',
+  createdAt: '2025-08-01',
+  password: 'stevepass'
+};
+
+type Calculation = (num1: number, num2: number) => number;
+
+const add: Calculation = (a, b) => a + b;
+
+const subtract: Calculation = (a, b) => a - b;
+
+// add('4', 4);

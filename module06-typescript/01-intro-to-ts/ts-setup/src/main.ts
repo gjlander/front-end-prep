@@ -46,3 +46,17 @@ const isOldEnough = (age: number): string => {
     return 'You are not old enough';
   }
 };
+
+const logMessage = (message: string, userId?: number): void => {
+  console.log(`${message} ${userId ? `From user ${userId}` : ''}`);
+};
+
+logMessage('Hello there!');
+logMessage('Something', 4);
+
+const greetUser = (name: string = 'guest'): string => {
+  return `Welcome, ${name}!`;
+};
+
+console.log(greetUser()); // Welcome, guest!
+console.log(greetUser('Ada')); // Welcome, Ada!
