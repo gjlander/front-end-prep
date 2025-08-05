@@ -90,7 +90,7 @@ const throwSomething = (throwError: boolean) => {
     } else {
       throw "This wouldn't have a message property, and would cause a runtime error";
     }
-  } catch (error) {
+  } catch (error: any) {
     console.log(error);
     if (error instanceof Error) {
       console.log(error.message);
@@ -102,3 +102,66 @@ const throwSomething = (throwError: boolean) => {
 
 throwSomething(true);
 throwSomething(false);
+
+// type Dog = { bark: () => void };
+// type Cat = { meow: () => void };
+
+// type Pet = Dog | Cat;
+
+// const isDog = (pet: Pet) => {
+//   return 'bark' in pet;
+// };
+
+// function speak(pet: Pet) {
+//   if (isDog(pet)) {
+//     pet.bark();
+//   } else {
+//     pet.meow();
+//   }
+// }
+
+// // --- Example Instances ---
+
+// const dog: Dog = {
+//   bark: () => console.log('Woof!')
+// };
+
+// const cat: Cat = {
+//   meow: () => console.log('Meow!')
+// };
+
+// // --- Usage ---
+
+type Dog = { kind: 'dog'; bark: () => void };
+type Cat = { kind: 'cat'; meow: () => void };
+
+type Pet = Dog | Cat;
+
+function speak(pet: Pet) {
+  if (pet.kind === 'dog') {
+    pet.bark();
+  } else {
+    pet.meow();
+  }
+}
+
+const dog: Dog = {
+  kind: 'dog',
+  bark: () => console.log('Woof!')
+};
+
+const cat: Cat = {
+  kind: 'cat',
+  meow: () => console.log('Meow!')
+};
+
+speak(dog); // Output: Woof!
+speak(cat); // Output: Meow!
+
+const btn = document.querySelector('#btn')!;
+// const input = document.querySelector('#text-input') as HTMLInputElement;
+const input = document.querySelector<HTMLInputElement>('#text-input')!;
+
+btn.textContent = 'CLICK!!!!';
+btn.classList.add('something');
+console.log(input.value);

@@ -15,6 +15,7 @@
   - `instanceof`
   - `in`
   - discriminated unions
+- `unknown` type
 - Return types `is`
 - Type assertions
   - assert not null
@@ -184,4 +185,147 @@ throwSomething(true);
 throwSomething(false);
 ```
 
+### `unknown` type
+
+- Which gives us a great opportunity to talk about the `unknown` type
+- You'll notice in the `catch` block, the `error` is of type `unknown`. This is similar to any, except TS will force us to type narrow. This can be a really great replacement for `any` if you're unsure of what types will be passed
+- If we remove our type checking, TS will complain with `unknown` type
+
+```ts
+catch (error) {
+    console.log(error);
+    // if (error instanceof Error) {
+    console.log(error.message);
+    // } else {
+    // console.log('Default error message');
+    // }
+  }
+```
+
+- If we change `error`'s type to `any` TS will let us do whatever want
+
+```ts
+catch (error: any) {
+    console.log(error);
+    // if (error instanceof Error) {
+    console.log(error.message);
+    // } else {
+    // console.log('Default error message');
+    // }
+  }
+```
+
+- So for the flexibility of `any`, but keeping type safety, use `unknown`
+
 ### Checking for a property with `in`
+
+- Another JS feature that can help us out is the `in` keyword. It will let us check if a property exists on an object
+- Go over LMS example
+
+#### Custom Type Predicates
+
+- We can also extract this logic into a utility function
+
+```ts
+const isDog = (pet: Pet) => {
+  return 'bark' in pet;
+};
+```
+
+- If we hover over, the return type of this function isn't `boolean` as we might expect, but `Pet is Dog`. This is known as a type predicate, this is essentially a more explicit way to let TS know you're not only returning a boolean, but using this for type narrowing
+
+### Discriminated Unions
+
+- If we have a union type of 2 objects (as our Pet type is), we can add a property that each object will share, and use that to discriminate between which type we're using
+- So we add a `kind` property to each of our pet types
+
+```ts
+type Dog = { kind: 'dog'; bark: () => void };
+type Cat = { kind: 'cat'; meow: () => void };
+```
+
+- Now we can use that type for our type narrowing instead
+
+```ts
+function speak(pet: Pet) {
+  if (pet.kind === 'dog') {
+    pet.bark();
+  } else {
+    pet.meow();
+  }
+}
+
+const dog: Dog = {
+  kind: 'dog',
+  bark: () => console.log('Woof!')
+};
+
+const cat: Cat = {
+  kind: 'cat',
+  meow: () => console.log('Meow!')
+};
+```
+
+## Type Assertion
+
+- Going back to our DOM example, TS doesn't scan our HTML, so it has no way of knowing if the element is there our not, so it's always `HTMLElement | null`
+- But we wrote the HTML, we know it's there, so we can essentially tell TS, _"Hey, trust me bro"_ with a type assertion
+
+### Not null assertion
+
+- We could use a `!` to tell TS this isn't `null` when trying to access properties, but then we have to do it over and over and over
+
+```ts
+btn!.textContent = 'CLICK!!!!';
+```
+
+- We can also assert it as `not null` when we declare it
+
+```ts
+const btn = document.querySelector('#btn')!;
+
+btn.textContent = 'CLICK!!!!';
+btn.classList.add('something');
+```
+
+### Type assertion with `as` or `<>`
+
+- TS also doesn't recognize which type of element it is, so it gets mad if we try to access a `value` property
+
+```ts
+const btn = document.querySelector('#btn')!;
+const input = document.querySelector('#text-input')!;
+
+btn.textContent = 'CLICK!!!!';
+btn.classList.add('something');
+console.log(input.value);
+```
+
+- To give the additional context to TS, since WE know that it's an input element, we can say _"Hey, trust me bro"_ by saying `as`
+
+```ts
+const btn = document.querySelector('#btn')!;
+const input = document.querySelector('#text-input') as HTMLInputElement;
+
+btn.textContent = 'CLICK!!!!';
+btn.classList.add('something');
+console.log(input.value);
+```
+
+- You can also use this funky syntax with `<>`, but we'll generally prefer `as` since it's a little more readable
+  - and necessary when working with JSX
+  - we also need to assert not null again too
+
+```ts
+const input = document.querySelector<HTMLInputElement>('#text-input')!;
+```
+
+#### Untrusted sources
+
+- Go to LMS example on APIs
+- Note that this doesn't actually check if this is true, since TS only works during development. Later we'll introduce a really nice library to get runtime validation to verify your _"Hey, trust me bro"_
+
+## A brief overview of classes
+
+- TS adds some additional feature to creating classes. Since we won't be working much with classes, file it in the back of your head, and come back to it if you do need it
+- Many of these advanced class features wouldn't be used in making an app, but rather if you were making a library. `Abstract Classes` in particular are something you won't need to worry about in your day-to-day
