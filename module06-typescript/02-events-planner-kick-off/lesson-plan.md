@@ -92,10 +92,10 @@
 
 ```json
 {
-  "name": "Quacksart",
-  "imgUrl": "https://amsterdamduckstore.com/wp-content/uploads/2024/08/Mo-Rubber-Duck-Amsterdam-Duck-Store-front-e1725026098270.jpg",
-  "quote": "Listening to your bugs is music to my ears!",
-  "owner": "67a35cfd4348fa83ccb275bc"
+	"name": "Quacksart",
+	"imgUrl": "https://amsterdamduckstore.com/wp-content/uploads/2024/08/Mo-Rubber-Duck-Amsterdam-Duck-Store-front-e1725026098270.jpg",
+	"quote": "Listening to your bugs is music to my ears!",
+	"owner": "67a35cfd4348fa83ccb275bc"
 }
 ```
 
@@ -130,68 +130,88 @@
 
 ## Tour of the app
 
-- This is modified from our `useOutletContext-example`
+- I added a few things from `context-api` lecture to get us started
 
 ### App.jsx
 
-- I added `SignIn`, `Register` `NotFound` pages. The \* for the `NotFound` path acts as a wildcard, so basically anything that isn't a defined path will use that
+- I added `SignIn` and `NotFound` pages. The \* for the `NotFound` path acts as a wildcard, so basically anything that isn't a defined path will use that
 - Show what the pages look like
   - Sign In button is now a Link to signin page
-  - handleSignOut has some additional logic
+  - handleSignOut has been simplified
 
 ### MainLayout.jsx
 
-- We have added 2 pieces of state. One to hold the user data when we have it, and a boolean that defaults to true, telling us if we should revalidate the user session
-- We'll also pass the user state and setter to our Navbar so we can display a welcome message, and sign them out
+- Since our `Navbar` and `Footer`, don't need the `ducks` state, I'm only wrapping what's needed in our `DuckProvider`
+- I've wrapped our whole app inside of a new `AuthProvider`, where I've wired up a second context to handle anything related to Authentication/Authorization
 
 ```js
+import { Outlet } from 'react-router';
+import { ToastContainer } from 'react-toastify';
+import { DuckProvider, AuthProvider } from '../context';
+import { Navbar, Footer } from '../components';
+
 const MainLayout = () => {
-  // signedIn state is used in the Navbar, and by the MyPond page, so we define it in the layout
-  const [signedIn, setSignedIn] = useState(false);
-  const [user, setUser] = useState();
-  const [checkSession, setCheckSession] = useState(true);
-  return (
-    <div className='bg-slate-600 text-gray-300 flex flex-col min-h-screen'>
-      <Navbar signedIn={signedIn} setSignedIn={setSignedIn} user={user} setUser={setUser} />
-      <main className='flex-grow flex flex-col justify-between py-4'>
-        <Outlet
-          context={{
-            signedIn,
-            setSignedIn,
-            user,
-            setUser,
-            setCheckSession
-          }}
-        />
-      </main>
-      <Footer />
-    </div>
-  );
+	return (
+		<AuthProvider>
+			<div className='bg-slate-600 text-gray-300 flex flex-col min-h-screen'>
+				<Navbar />
+				<DuckProvider>
+					<main className='flex-grow flex flex-col justify-between py-4'>
+						<Outlet />
+					</main>
+				</DuckProvider>
+				<Footer />
+				<ToastContainer />
+			</div>
+		</AuthProvider>
+	);
 };
+
+export default MainLayout;
 ```
+
+### context/index.js
+
+- I've created an `AuthContext` and a custom `useAuth` hook, just like our `DuckContext`
+
+```js
+import { createContext, use } from 'react';
+import DuckProvider from './DuckProvider';
+import AuthProvider from './AuthProvider';
+
+const DuckContext = createContext();
+
+const useDucks = () => {
+	const context = use(DuckContext);
+	if (!context) throw new Error('useDucks must be used within a DuckContext');
+	return context;
+};
+
+const AuthContext = createContext();
+
+const useAuth = () => {
+	const context = use(AuthContext);
+	if (!context) throw new Error('useAuth must be used within an AuthContextProvider');
+	return context;
+};
+
+export { DuckContext, useDucks, DuckProvider, AuthContext, useAuth, AuthProvider };
+```
+
+### AuthProvider.jsx
+
+- We have three pieces of state related to auth
+
+  - `signedIn` - a boolean value based on if the user is signed in, defaults to false
+  - `user` - either our user object our `null`
+  - `checkSession` - another boolean that tells us whether to reauthenticate the user, defaults to `true` so that when a user first comes to the site, we check if they are "still signed in"
+
+- We pass these so they can be consumed by the components in our app
 
 ### SignIn.jsx
 
-- We have a form state, and deconstruct the values. We can shorten that, by doing it directly when we define the state
-
-```js
-const [{ email, password }, setForm] = useState({
-  email: '',
-  password: ''
-});
-```
-
-- We also have a loading state to prevent multiple submissions while we're still waiting for a response
-- We have our change handler to control our inputs, as always
-- handleSubmit
-  - async, so we can await inside of it
-  - inside of try, we prevent default as always
-  - Validation to make sure no fields are empty
-  - If we pass validation, set loading to true, and for now just log our input values
-  - In catch, for now just consoling the error
-  - finally is something we haven't used much. This will run even if the catch block happens. So the last thing, no matter what, is to set loading to false again
-- To prevent resubmitting while loading, our button is disabled while loading is true
-- Register page looks very similar
+- We destructure directly in the form state (remember this is just to prevent the form from resetting if there's an error)
+- We have an action that looks very similar to what we made for a new duck
 
 ## Sign In - from Postman to Frontend
 
@@ -201,7 +221,7 @@ const [{ email, password }, setForm] = useState({
 
 - To achieve the same result in our app, we'll have to write a function
 - In our `data` folder, let's make a new `auth.js` file, for our functions related to authentication
-  - We could technically add these to our `ducks.js` folder, but this organization works for my brain
+  - Our `duck` functions have also been moved into `ducks.js` for better organization
 
 ### Options object in fetch
 
@@ -219,48 +239,63 @@ const [{ email, password }, setForm] = useState({
 const BASE_URL = 'https://duckpond-89zn.onrender.com/auth';
 
 const signIn = async formData => {
-  const res = await fetch(`${BASE_URL}/signin`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(formData)
-  });
-  if (!res.ok) throw new Error(`${res.status}. Something went wrong!`);
+	const res = await fetch(`${BASE_URL}/signin`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify(formData)
+	});
+	if (!res.ok) throw new Error(`${res.status}. Something went wrong!`);
 
-  const data = await res.json();
-  // console.log(data);
+	const data = await res.json();
+	// console.log(data);
 
-  return data;
+	return data;
 };
 
 export { signIn };
 ```
 
-- Now we import it to our SignIn page, and use it in our submit handler
+- Import and re-export from `index.js`
 
 ```js
-import { signIn } from '../data/auth';
+import { getAllDucks, getDuckById, createDuck } from './ducks';
+import { signIn } from './auth';
+
+export { getAllDucks, getDuckById, createDuck, signIn };
+```
+
+- Now we import it to our SignIn page, and use it in our action
+
+```js
+import { useActionState, useState } from 'react';
+import { Link } from 'react-router';
+import { toast } from 'react-toastify';
+import { validateSignIn } from '../utils';
+import { signIn } from '../data';
 // other stuff...
 
-const handleSubmit = async e => {
-  try {
-    e.preventDefault();
+const signinAction = async (prevState, formData) => {
+	const email = formData.get('email');
+	const password = formData.get('password');
 
-    if (!email || !password) throw new Error('All fields are required');
+	const validationErrors = validateSignIn({ email, password });
+	if (Object.keys(validationErrors).length !== 0) {
+		return { error: validationErrors, success: false };
+	}
+	try {
+		toast.success('Welcome back');
 
-    setLoading(true);
+		const signInRes = await signIn({ email, password });
 
-    console.log(email, password);
+		console.log(signInRes);
 
-    const signInRes = await signIn({ email, password });
-
-    console.log(signInRes);
-  } catch (error) {
-    console.error(error);
-  } finally {
-    setLoading(false);
-  }
+		return { error: null, success: true };
+	} catch (error) {
+		toast.error(error.message || 'Something went wrong!');
+		return { error: null, success: false };
+	}
 };
 ```
 
@@ -274,17 +309,20 @@ const handleSubmit = async e => {
 
 - Our first step is to save the token in local storage, so that if the user came back to our site later they would stay signed in (because the token is a string, we don't need to stringify)
 - We also update our signed in state, and tell the app we need to check the session again
+- We need to import `useAuth` and destructure `setSignedIn` and `setCheckSession`
 
 ```js
-//in handleSubmit
+import { useAuth } from '../context';
+// other stuff...
+const { setSignedIn, setCheckSession } = useAuth();
+```
+
+```js
+//in signinAction
 console.log(signInRes);
 localStorage.setItem('token', signInRes.token);
 setSignedIn(true);
 setCheckSession(true);
-setForm({
-  email: '',
-  password: ''
-});
 ```
 
 ## Getting user profile
@@ -299,134 +337,135 @@ setForm({
 
 ```js
 const me = async () => {
-  const token = localStorage.getItem('token');
+	const token = localStorage.getItem('token');
 
-  const res = await fetch(`${BASE_URL}/me`, {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  });
-  if (!res.ok) throw new Error(`${res.status}. Something went wrong!`);
+	const res = await fetch(`${BASE_URL}/me`, {
+		headers: {
+			Authorization: `Bearer ${token}`
+		}
+	});
+	if (!res.ok) throw new Error(`${res.status}. Something went wrong!`);
 
-  const data = await res.json();
-  // console.log(data);
+	const data = await res.json();
+	// console.log(data);
 
-  return data;
+	return data;
 };
 ```
 
-- Now we back in MainLayout.jsx, we can put this in a useEffect, and call it any time we want to check the session
+- Now we back in `AuthProvider.jsx`, we can put this in a useEffect, and call it any time we want to check the session
+- Now getUser() will always run the first time you visit the page, and if a user signs in.
 
 ```js
 useEffect(() => {
-  const getUser = async () => {
-    try {
-      const data = await me();
+	const getUser = async () => {
+		try {
+			const data = await me();
 
-      setUser(data);
-      setSignedIn(true);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setCheckSession(false);
-    }
-  };
+			setUser(data);
+			setSignedIn(true);
+		} catch (error) {
+			console.error(error);
+		} finally {
+			setCheckSession(false);
+		}
+	};
 
-  if (checkSession) getUser();
+	if (checkSession) getUser();
 }, [checkSession]);
 ```
-
-```js
-//inside submit handler
-const signInRes = await signIn({ email, password });
-
-console.log(signInRes);
-localStorage.setItem('token', signInRes.token);
-
-const userData = await me();
-
-console.log(userData);
-
-setForm({
-  email: '',
-  password: ''
-});
-```
-
-- Now in our MainLayout, let's add a state for our user, and pass it to the context
-
-```js
-const MainLayout = () => {
-  // signedIn state is used in the Navbar, and by the MyPond page, so we define it in the layout
-  const [signedIn, setSignedIn] = useState(false);
-  const [user, setUser] = useState();
-  return (
-    <div className='bg-slate-600 text-gray-300 flex flex-col min-h-screen'>
-      <Navbar signedIn={signedIn} setSignedIn={setSignedIn} />
-      <main className='flex-grow flex flex-col justify-between py-4'>
-        <Outlet context={{ signedIn, setSignedIn, user, setUser }} />
-      </main>
-      <Footer />
-    </div>
-  );
-};
-```
-
-- Now getUser() will always run the first time you visit the page, and if a user signs in.
 
 - To sign out, you simply update the needed state, and remove the token from local storage
 
 ```js
 const handleSignOut = () => {
-  localStorage.removeItem('token');
-  setSignedIn(false);
-  setUser(null);
-  setTimeout(() => {
-    navigate('/');
-  }, 1000);
+	localStorage.removeItem('token');
+	setSignedIn(false);
+	setUser(null);
 };
 ```
 
 ## Protected Routes
 
-- The LMS has an article on protected layouts, I want to demo a possible execution of this
+- The LMS has an article on protected layouts, let's see that in action
 - Only a signed in user can make a new duck. We have protected this endpoint on the backend, but we want to prevent users from even seeing the MyPond Page if they're not signed in
 - First we can conditionally render it, so it only appears when a user is signed in
 
 ```js
 {
-  signedIn ? (
-    <>
-      <li>
-        <NavLink to='/mypond'>My Pond</NavLink>
-      </li>
-      <li>
-        <button className='btn btn-primary' onClick={handleSignOut}>
-          Sign Out
-        </button>
-      </li>
-    </>
-  ) : (
-    <li>
-      <Link to='/signin'>
-        <button
-          className='btn btn-primary'
-          // onClick={handleSignIn}
-        >
-          Sign In
-        </button>
-      </Link>
-    </li>
-  );
+	signedIn ? (
+		<>
+			<li>
+				<NavLink className={showActive} to='/mypond'>
+					My Pond
+				</NavLink>
+			</li>
+			<li>
+				<button className='btn btn-primary' onClick={handleSignOut}>
+					Sign Out
+				</button>
+			</li>
+		</>
+	) : (
+		<li>
+			<Link className='btn btn-primary' to='/signin'>
+				Sign In
+			</Link>
+		</li>
+	);
 }
 ```
 
 - But it's still accessible if some were to manually type the URL
+
+### Making a protected Layout
+
+- If we have sections of our app we want to protect like this, we can make a nested layout for them
+- Make a new `AuthLayout.jsx`
 - We have some protection here already, but instead of text, we could simply redirect the user to the signin page by using react-router `<Navigate>` component
 - It works similar to the Link component, but simply redirects right away
 
 ```js
-if (!signedIn) return <Navigate to='/signin' />;
+import { Outlet, Navigate } from 'react-router';
+import { useAuth } from '../context';
+const AuthLayout = () => {
+	const { signedIn } = useAuth();
+	if (signedIn) {
+		return <Outlet />;
+	} else {
+		return <Navigate to='/signin' />;
+	}
+};
+
+export default AuthLayout;
+```
+
+- Then nest anything we want to protect inside this layout
+
+```js
+import { BrowserRouter, Routes, Route } from 'react-router';
+import { Home, MyPond, DuckPage, SignIn, NotFound } from './pages';
+import { MainLayout, AuthLayout } from './layouts';
+
+function App() {
+	return (
+		<BrowserRouter>
+			<Routes>
+				<Route path='/' element={<MainLayout />}>
+					<Route index element={<Home />} />
+					<Route path='ducks/:duckId' element={<DuckPage />} />
+					<Route path='signin' element={<SignIn />} />
+					<Route path='mypond' element={<AuthLayout />}>
+						<Route index element={<MyPond />} />
+					</Route>
+				</Route>
+				<Route path='*' element={<NotFound />} />
+			</Routes>
+		</BrowserRouter>
+	);
+}
+
+export default App;
 ```
 
 - Now if someone signed out happens upon the page, they get redirected.
@@ -436,9 +475,3 @@ if (!signedIn) return <Navigate to='/signin' />;
 ```js
 if (signedIn) return <Navigate to='/mypond' />;
 ```
-
-## Events API Docs
-
-- You had a chance to familiarize yourself with the events api yesterday, but I want to cover a couple of things in the docs
-- You can also paste the toke into the `Authorize` button on the top right. Then in the docs themselves you can also test out endpoints
-- The docs also tell you what's required, and give demonstrations of each end point
