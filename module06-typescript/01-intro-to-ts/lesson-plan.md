@@ -6,13 +6,13 @@
 
 ## Topics to cover
 
-- What is js and why bother?
+- What is TS and why bother?
 - Primitive types
   - type annotations
   - inferred types
 - Typing functions
   - Not null assertion
-- A modern js setup
+- A modern TS setup
 - Refactoring old exercises
 
 ## What is TS?
@@ -30,13 +30,13 @@ let num = 6;
 num = 'Not anymore!';
 ```
 
-- As mentioned, not all programming languages are like this, in fact many aren't. They require you do declare what type the variable is when you declare it, and will throw an error if you try to reassign it. This (along with some other features) is what js adds to js ad shown in the [docs](https://www.typescriptlang.org/)
+- As mentioned, not all programming languages are like this, in fact many aren't. They require you do declare what type the variable is when you declare it, and will throw an error if you try to reassign it. This (along with some other features) is what TS adds to js ad shown in the [docs](https://www.typescriptlang.org/)
 
-- This makes js a superset of js, it doesn't remove anything from js, only adds. And in fact, gets compiled (or technically transpiled) into js
+- This makes TS a superset of js, it doesn't remove anything from js, only adds. And in fact, gets compiled (or technically transpiled) into js
 
 ### Why
 
-- js is designed to help us write cleaner code to catch potential bugs as we write our code. It throws errors during development, so we don't get runtime errors (errors that don't appear in our code, but will cause our app to crash)
+- TS is designed to help us write cleaner code to catch potential bugs as we write our code. It throws errors during development, so we don't get runtime errors (errors that don't appear in our code, but will cause our app to crash)
 - If we try to use an array method on our `num` variable, js won't say anything is wrong, but during runtime we see this code in fact doesn't work. This will give us an `Uncaught TypeError`
 
 ```js
@@ -45,7 +45,7 @@ num.forEach(element => {
 });
 ```
 
-## A modern js setup
+## A modern TS setup
 
 - Frankly, the most complicated part of working with TypeScript is setting up your local environment. Luckily, nowadays there are pretty powerful tools that take care of that for us (at least in the frontend)
 
@@ -59,26 +59,26 @@ num.forEach(element => {
 - Just like React, the vanilla setup comes with a lot of boilerplate that we'll clear out
   - public/
   - src/typescript.svg
-  - src/counter.js
+  - src/counter.ts
   - remove icon in HTML file
-  - clean out `main.js`
-- We'll only use the vanilla setup this week for learning js, next week we'll transition back to React (but with js!)
+  - clean out `main.ts`
+- We'll only use the vanilla setup this week for learning TS, next week we'll transition back to React (but with TS!)
 
 ### Directory structure
 
 - Our directory structure looks very similar to our React setup but I want to highlight 2 things
-  - `jsconfig.json` - this tells js how we want it to behave in our application. Getting this file right is one of the hardest parjs of the setup, so thankfully it's taken care of for us. We'll dive deeper into it later
-  - `package.json` - In the build command, `jsc` had been added before `vite build` This is what will cause our js to compile into js for deployment.
+  - `jsconfig.json` - this tells TS how we want it to behave in our application. Getting this file right is one of the hardest parjs of the setup, so thankfully it's taken care of for us. We'll dive deeper into it later
+  - `package.json` - In the build command, `tsc` had been added before `vite build` This is what will cause our TS to compile into js for deployment.
 
 ### Fixing js errors in a modern IDE
 
-- If we copy/paste our js into `main.js`, VS Code will complain for us, and if we hover over the red squigglies we see our errors, but our code will still run, and we can see the runtime error
-- Older setups you would have your js, run `jsc` to compile it, and your app would crash if there were errors. If dev, this can be annoying, so now our app will continue to run with the errors, and VS Code (or any modern IDE) will highlight the errors for us
+- If we copy/paste our js into `main.ts`, VS Code will complain for us, and if we hover over the red squigglies we see our errors, but our code will still run, and we can see the runtime error
+- Older setups you would have your TS, run `tsc` to compile it, and your app would crash if there were errors. If dev, this can be annoying, so now our app will continue to run with the errors, and VS Code (or any modern IDE) will highlight the errors for us
 
-## js Primitives in js
+## js Primitives in TS
 
-- js has all of the primitive js types (remember js does HAVE types). You can explicitly type a variable when you declare it. What are the js types?
-- Annotating a type can be as simple as adding a `:` and the type name, and we can see it when we hover over a variable (you may have already noticed this js feature while working in js)
+- TS has all of the primitive js types (remember js does HAVE types). You can explicitly type a variable when you declare it. What are the TS types?
+- Annotating a type can be as simple as adding a `:` and the type name, and we can see it when we hover over a variable (you may have already noticed this TS feature while working in js)
 - string
 
 ```js
@@ -122,7 +122,7 @@ anything = 42;
 
 ### Implicit vs Explicit typing
 
-- The nice thing is that js is actually pretty smart about figuring out what type a variable should be. So best practice is to let js figure it out, and only explicitly type as needed
+- The nice thing is that TS is actually pretty smart about figuring out what type a variable should be. So best practice is to let TS figure it out, and only explicitly type as needed
 - And VS Code offers help as well, when we hover
 
 ```js
@@ -132,7 +132,7 @@ let bool = false;
 let nullVar = null;
 ```
 
-- But sometimes js gejs it wrong, for `undef` it will see it implicitly as `any`, because it has no idea what type you'll give it later. So if we want it to be `undefined` we have to state it explicitly
+- But sometimes TS gets it wrong, for `undef` it will see it implicitly as `any`, because it has no idea what type you'll give it later. So if we want it to be `undefined` we have to state it explicitly
 
 ```js
 let undef;
@@ -144,12 +144,12 @@ let undef;
 
 ### Literal types with `const`
 
-- You may have noticed that I've been using `let` this whole time. Since primitives are immutable (unlike Objecjs and Arrays), if I assign a primitive with `const` js recognizes that it cannot be changed, and infers a literal type
+- You may have noticed that I've been using `let` this whole time. Since primitives are immutable (unlike Objects and Arrays), if I assign a primitive with `const` TS recognizes that it cannot be changed, and infers a literal type
 - This means it's not just of type `string` but specifically that string
   - same for `number or boolean`
 
 ```js
-const consjstring = 'I cannot be changed';
+const constString = 'I cannot be changed';
 ```
 
 ## Basic Function Annotation
@@ -165,7 +165,7 @@ function shout(spoken) {
 console.log(shout('hey, how are you?'));
 ```
 
-- js is already yelling at us to say we have an implicit `any`, this means js can't help us out, since we'll get a runtime error if we try to pass a number, or anything other than a string (or any object with a `toUpperCase` method)
+- TS is already yelling at us to say we have an implicit `any`, this means TS can't help us out, since we'll get a runtime error if we try to pass a number, or anything other than a string (or any object with a `toUpperCase` method)
 
 ```js
 console.log(shout(42));
@@ -179,7 +179,7 @@ function shout(spoken: string) {
 }
 ```
 
-- Now js will complain if we try to pass a number
+- Now TS will complain if we try to pass a number
 - This can also help us with autocomplete suggestions and avoid typos
 
 ```js
@@ -190,7 +190,7 @@ function shout(spoken: string) {
 
 ### Annotating return types
 
-- js can also infer the return type (hover to show), but for clarity, we can also explicitly type it by writing it after the ()
+- TS can also infer the return type (hover to show), but for clarity, we can also explicitly type it by writing it after the ()
 
 ```js
 function shout(spoken: string): string {
@@ -206,7 +206,7 @@ const shout = (spoken: string): string => {
 };
 ```
 
-- If a function doesn't return anything at all, we know it returns `undefined`, but js gives us `void` which let's us more explicitly say this function has no return, or if it does return something, ignore it completely
+- If a function doesn't return anything at all, we know it returns `undefined`, but TS gives us `void` which let's us more explicitly say this function has no return, or if it does return something, ignore it completely
 
 ```js
 const print = (content: any): void => {

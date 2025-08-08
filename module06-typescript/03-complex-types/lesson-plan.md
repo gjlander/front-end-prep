@@ -21,7 +21,6 @@
 - Function types
   - optional parameters
   - default parameters
-- Quick overview of classes
 
 ## Typing Arrays
 
