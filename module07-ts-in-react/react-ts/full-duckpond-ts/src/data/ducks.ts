@@ -1,0 +1,48 @@
+type DBEntry = {
+	_id: string;
+	createdAt: string;
+	__v: number;
+};
+
+type DuckInput = {
+	name: string;
+	imgUrl: string;
+	quote: string;
+};
+
+type DuckRes = DBEntry & DuckInput;
+
+const getAllDucks = async (abortCont: AbortController): Promise<DuckRes[]> => {
+	const res = await fetch('https://duckpond-89zn.onrender.com/wild-ducks', {
+		signal: abortCont.signal
+	});
+	if (!res.ok) throw new Error(`${res.status}. Something went wrong!`);
+	const data = await res.json();
+	// console.log(data);
+
+	return data;
+};
+
+const getDuckById = async (id: string, abortCont: AbortController): Promise<DuckRes> => {
+	const res = await fetch(`https://duckpond-89zn.onrender.com/wild-ducks/${id}`, {
+		signal: abortCont.signal
+	});
+	if (!res.ok) throw new Error(`${res.status}. Something went wrong!`);
+
+	const data = await res.json();
+
+	return data;
+};
+
+const createDuck = async (newDuck: DuckInput): Promise<DuckRes> => {
+	const res = await fetch('https://duckpond-89zn.onrender.com/wild-duckss', {
+		method: 'POST',
+		headers: { 'Content-type': 'application/json' },
+		body: JSON.stringify(newDuck)
+	});
+	if (!res.ok) throw new Error(`${res.status}. Something went wrong!`);
+	const data = await res.json();
+	return data;
+};
+
+export { getAllDucks, getDuckById, createDuck };
