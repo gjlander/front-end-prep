@@ -1,3 +1,4 @@
+import type { SignInInput } from '../types';
 import { useActionState, useState } from 'react';
 import { Link, Navigate } from 'react-router';
 import { toast } from 'react-toastify';
@@ -32,7 +33,7 @@ const SignIn = () => {
 		}
 	};
 	const [state, formAction, isPending] = useActionState(signinAction, { error: null, success: false });
-	const [{ email, password }, setForm] = useState({
+	const [{ email, password }, setForm] = useState<SignInInput>({
 		email: '',
 		password: ''
 	});

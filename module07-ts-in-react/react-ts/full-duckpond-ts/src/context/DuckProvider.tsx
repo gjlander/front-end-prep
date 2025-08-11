@@ -1,3 +1,4 @@
+import type { Duck } from '../types';
 import { useState, useEffect, type ReactNode } from 'react';
 
 import { getAllDucks } from '../data';
@@ -8,7 +9,7 @@ type DuckProviderProps = {
 };
 
 const DuckProvider = ({ children }: DuckProviderProps) => {
-	const [ducks, setDucks] = useState([]);
+	const [ducks, setDucks] = useState<Duck[]>([]);
 	useEffect(() => {
 		const abortController = new AbortController();
 		(async () => {

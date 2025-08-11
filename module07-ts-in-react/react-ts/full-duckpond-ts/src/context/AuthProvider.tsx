@@ -1,15 +1,7 @@
+import { type User } from '../types';
 import { useState, useEffect, type ReactNode } from 'react';
 import { AuthContext } from '.';
 import { me } from '../data';
-
-type User = {
-	_id: string;
-	firstName: string;
-	lastName: string;
-	email: string;
-	createdAt: string;
-	__v: number;
-};
 
 const AuthProvider = ({ children }: { children: ReactNode }) => {
 	const [signedIn, setSignedIn] = useState(false);

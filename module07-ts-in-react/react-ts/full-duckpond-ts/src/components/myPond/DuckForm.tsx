@@ -1,3 +1,4 @@
+import type { DuckInput } from '../../types';
 import { useActionState, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useDucks } from '../../context';
@@ -30,7 +31,7 @@ const DuckForm = () => {
 		}
 	};
 	const [state, formAction, isPending] = useActionState(submitAction, { error: null, success: false });
-	const [form, setForm] = useState({
+	const [form, setForm] = useState<DuckInput>({
 		name: '',
 		imgUrl: '',
 		quote: ''

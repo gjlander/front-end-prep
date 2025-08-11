@@ -1,17 +1,28 @@
-const sleep = ms => new Promise(res => setTimeout(res, ms));
+type DuckInput = {
+	name: string;
+	imgUrl: string;
+	quote: string;
+};
 
-const isValidUrl = testUrl => {
+type SignInInput = {
+	email: string;
+	password: string;
+};
+
+const sleep = (ms: number) => new Promise(res => setTimeout(res, ms));
+
+const isValidUrl = (testUrl: string) => {
 	try {
 		new URL(testUrl);
 		return true;
-		// eslint-disable-next-line no-unused-vars
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	} catch (error) {
 		return false;
 	}
 };
 
-const validateDuckForm = ({ name, imgUrl, quote }) => {
-	const newErrors = {};
+const validateDuckForm = ({ name, imgUrl, quote }: DuckInput) => {
+	const newErrors: Partial<DuckInput> = {};
 	if (!name.trim()) {
 		newErrors.name = 'Name is required';
 	}
@@ -26,8 +37,8 @@ const validateDuckForm = ({ name, imgUrl, quote }) => {
 	return newErrors;
 };
 
-const validateSignIn = ({ email, password }) => {
-	const newErrors = {};
+const validateSignIn = ({ email, password }: SignInInput) => {
+	const newErrors: Partial<SignInInput> = {};
 
 	if (!email.trim()) {
 		newErrors.email = 'Email is required';

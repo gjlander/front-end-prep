@@ -35,14 +35,14 @@ type ContainerProps = {
 
 - I've gone ahead and refactored our DuckPond using a Vite TS setup. I've renamed all js and jsx files to ts/tsx, and add types annotations to ts files. tsx files are untouched, so have lots of errors. As we continue through the lecture, we'll work on fixing those errors
 
-- auth.ts
+- auth.ts and ducks.ts
   - I've typed the parameters and returns of each auth function
 - ducks.ts
 - We have some redundant types here with `DBEntry`, but we'll look at organizing those soon
 
-### Typing props in our DuckPond
+- also typed our utils - again, note the redundant types
 
-- I've gone ahead and refactored our DuckPond using a Vite TS setup. I've renamed all js and jsx files to ts/tsx, but I haven't touched the code at all, so we have lots of errors. As we continue through the lecture, we'll work on fixing those errors
+### Typing props in our DuckPond
 
 - Since we've already refactored to use Context, we only have 3 components that still have props:
 
@@ -92,7 +92,7 @@ const DuckCard = ({ imgUrl, name, quote }: DuckCardProps) => {};
 ## Typing our Duckpond state
 
 - We don't have a lot of props, but we do have a decent amount of state in
-  - AuthProvider.tsx, DuckProvider.tsx, DuckForm.tsx
+  - AuthProvider.tsx, DuckProvider.tsx, DuckForm.tsx, SignIn.tsx
 
 ### AuthProvider
 
@@ -111,3 +111,90 @@ type User = {
 
 const [user, setUser] = useState<User | null>(null);
 ```
+
+#### Organizing shared types
+
+- Now we'll look at organizing those redundant types. Since this is exactly the same as our `User` type used in `auth.ts`, to keep things DRY we can moved those shared types together and export them
+- Types used in just 1 file can be co-located (declared in that file), but shared types will go in `src/types/index.ts`
+
+```ts
+type DBEntry = {
+	_id: string;
+	createdAt: string;
+	__v: number;
+};
+
+export type User = DBEntry & {
+	firstName: string;
+	lastName: string;
+	email: string;
+};
+```
+
+- Then we can import it in `auth.ts`, and `AuthProvider.tsx`
+
+```ts
+import { type User } from '../types';
+```
+
+### DuckProvider
+
+- Since our default state is an empty array, we need to tell TS what type of array this should be. It should be an array of `ducks`, so let's share this type and move it into our `types` folder
+  - we'll also need to share our `DuckInput` type later, so let's already move that one as well
+
+```ts
+export type DuckInput = {
+	name: string;
+	imgUrl: string;
+	quote: string;
+};
+
+export type Duck = DBEntry & DuckInput;
+```
+
+- Then import into `ducks.ts`
+
+```ts
+import type { DuckInput, Duck } from '../types';
+```
+
+- And `DuckProvider.tsx`
+
+```ts
+import type { Duck } from '../types';
+
+const [ducks, setDucks] = useState<Duck[]>([]);
+```
+
+### DuckForm.tsx
+
+- Since we have an initial state for our form, we don't strictly need to pass a type, but to explicitly state that this is our `DuckInput` type, we can add it here
+
+```ts
+import type { DuckInput } from '../../types';
+
+const [form, setForm] = useState<DuckInput>({
+	name: '',
+	imgUrl: '',
+	quote: ''
+});
+```
+
+### SignIn.tsx
+
+- Same principle for our sign in form
+- We move `SignInInput` to `types`, and share it
+
+```ts
+import type { SignInInput } from '../types';
+const [{ email, password }, setForm] = useState<SignInInput>({
+	email: '',
+	password: ''
+});
+```
+
+## Controlled Components & DOM Events
+
+- Walk through articles locally
+- Highlight that you can either type the function, or the argument
+- Uses React types, and DOM types for element
