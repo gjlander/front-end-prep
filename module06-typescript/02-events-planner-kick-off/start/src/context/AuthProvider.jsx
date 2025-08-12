@@ -24,14 +24,25 @@ const AuthProvider = ({ children }) => {
 		if (checkSession) getUser();
 	}, [checkSession]);
 
+	const handleSignIn = token => {
+		localStorage.setItem('token', token);
+		setSignedIn(true);
+		setCheckSession(true);
+	};
+
+	const handleSignOut = () => {
+		localStorage.removeItem('token');
+		setSignedIn(false);
+		setUser(null);
+	};
 	return (
 		<AuthContext
 			value={{
 				signedIn,
-				setSignedIn,
 				user,
 				setUser,
-				setCheckSession
+				handleSignIn,
+				handleSignOut
 			}}
 		>
 			{children}

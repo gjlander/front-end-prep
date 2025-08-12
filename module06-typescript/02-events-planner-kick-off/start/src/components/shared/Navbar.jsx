@@ -1,14 +1,8 @@
-import { useState } from 'react';
 import { Link, NavLink } from 'react-router';
 import { useAuth } from '../../context';
 const Navbar = () => {
-	const { signedIn, setSignedIn, setUser } = useAuth();
+	const { signedIn, handleSignOut } = useAuth();
 
-	const handleSignOut = () => {
-		localStorage.removeItem('token');
-		setSignedIn(false);
-		setUser(null);
-	};
 	const showActive = ({ isActive }) => (isActive ? 'menu-active' : '');
 	return (
 		<div className='navbar bg-slate-800 '>

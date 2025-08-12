@@ -6,7 +6,7 @@ import { signIn } from '../data';
 import { useAuth } from '../context';
 
 const SignIn = () => {
-	const { signedIn, setSignedIn, setCheckSession } = useAuth();
+	const { signedIn, handleSignIn } = useAuth();
 	const signinAction = async (prevState, formData) => {
 		const email = formData.get('email');
 		const password = formData.get('password');
@@ -21,9 +21,7 @@ const SignIn = () => {
 			const signInRes = await signIn({ email, password });
 
 			console.log(signInRes);
-			localStorage.setItem('token', signInRes.token);
-			setSignedIn(true);
-			setCheckSession(true);
+			handleSignIn(signInRes.token);
 
 			return { error: null, success: true };
 		} catch (error) {
