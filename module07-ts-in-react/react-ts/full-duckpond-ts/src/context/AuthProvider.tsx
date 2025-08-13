@@ -1,4 +1,4 @@
-import { type User } from '../types';
+import type { User, AuthContextType } from '../types';
 import { useState, useEffect, type ReactNode } from 'react';
 import { AuthContext } from '.';
 import { me } from '../data';
@@ -25,19 +25,24 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 		if (checkSession) getUser();
 	}, [checkSession]);
 
-	return (
-		<AuthContext
-			value={{
-				signedIn,
-				setSignedIn,
-				user,
-				setUser,
-				setCheckSession
-			}}
-		>
-			{children}
-		</AuthContext>
-	);
+	const handleSignIn = (token: string) => {
+		localStorage.setItem('token', token);
+		setSignedIn(true);
+		setCheckSession(true);
+	};
+
+	const handleSignOut = () => {
+		localStorage.removeItem('token');
+		setSignedIn(false);
+		setUser(null);
+	};
+	const value: AuthContextType = {
+		signedIn,
+		user,
+		handleSignIn,
+		handleSignOut
+	};
+	return <AuthContext value={value}>{children}</AuthContext>;
 };
 
 export default AuthProvider;

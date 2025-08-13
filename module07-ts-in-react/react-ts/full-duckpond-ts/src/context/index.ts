@@ -1,16 +1,17 @@
+import type { AuthContextType, DuckContextType } from '../types';
 import { createContext, use } from 'react';
 import DuckProvider from './DuckProvider';
 import AuthProvider from './AuthProvider';
 
-const DuckContext = createContext();
+const DuckContext = createContext<DuckContextType | undefined>(undefined);
 
-const useDucks = () => {
+const useDucks = (): DuckContextType => {
 	const context = use(DuckContext);
 	if (!context) throw new Error('useDucks must be used within a DuckContext');
 	return context;
 };
 
-const AuthContext = createContext();
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const useAuth = () => {
 	const context = use(AuthContext);

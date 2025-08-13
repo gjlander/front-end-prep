@@ -40,7 +40,6 @@ const AuthProvider = ({ children }) => {
 			value={{
 				signedIn,
 				user,
-				setUser,
 				handleSignIn,
 				handleSignOut
 			}}

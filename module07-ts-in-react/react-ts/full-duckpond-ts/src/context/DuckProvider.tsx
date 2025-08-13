@@ -1,4 +1,4 @@
-import type { Duck } from '../types';
+import type { Duck, DuckContextType } from '../types';
 import { useState, useEffect, type ReactNode } from 'react';
 
 import { getAllDucks } from '../data';
@@ -30,7 +30,9 @@ const DuckProvider = ({ children }: DuckProviderProps) => {
 			abortController.abort();
 		};
 	}, []);
-	return <DuckContext value={{ ducks, setDucks }}>{children}</DuckContext>;
+
+	const value: DuckContextType = { ducks, setDucks };
+	return <DuckContext value={value}>{children}</DuckContext>;
 };
 
 export default DuckProvider;

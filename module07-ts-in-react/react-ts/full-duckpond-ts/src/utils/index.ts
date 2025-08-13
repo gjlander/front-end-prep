@@ -1,13 +1,4 @@
-type DuckInput = {
-	name: string;
-	imgUrl: string;
-	quote: string;
-};
-
-type SignInInput = {
-	email: string;
-	password: string;
-};
+import type { DuckInput, SignInInput, DuckErrors, SignInErrors } from '../types';
 
 const sleep = (ms: number) => new Promise(res => setTimeout(res, ms));
 
@@ -22,7 +13,7 @@ const isValidUrl = (testUrl: string) => {
 };
 
 const validateDuckForm = ({ name, imgUrl, quote }: DuckInput) => {
-	const newErrors: Partial<DuckInput> = {};
+	const newErrors: DuckErrors = {};
 	if (!name.trim()) {
 		newErrors.name = 'Name is required';
 	}
@@ -38,7 +29,7 @@ const validateDuckForm = ({ name, imgUrl, quote }: DuckInput) => {
 };
 
 const validateSignIn = ({ email, password }: SignInInput) => {
-	const newErrors: Partial<SignInInput> = {};
+	const newErrors: SignInErrors = {};
 
 	if (!email.trim()) {
 		newErrors.email = 'Email is required';

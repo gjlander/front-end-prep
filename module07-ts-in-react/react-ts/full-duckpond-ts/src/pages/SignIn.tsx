@@ -1,5 +1,5 @@
-import type { SignInInput } from '../types';
-import { useActionState, useState } from 'react';
+import type { SignInInput, SignInActionResult } from '../types';
+import { useActionState, useState, type ChangeEvent } from 'react';
 import { Link, Navigate } from 'react-router';
 import { toast } from 'react-toastify';
 import { validateSignIn } from '../utils';
@@ -7,10 +7,10 @@ import { signIn } from '../data';
 import { useAuth } from '../context';
 
 const SignIn = () => {
-	const { signedIn, setSignedIn, setCheckSession } = useAuth();
-	const signinAction = async (prevState, formData) => {
-		const email = formData.get('email');
-		const password = formData.get('password');
+	const { signedIn, handleSignIn } = useAuth();
+	const signinAction = async (_: SignInActionResult, formData: FormData): Promise<SignInActionResult> => {
+		const email = formData.get('email') as string;
+		const password = formData.get('password') as string;
 
 		const validationErrors = validateSignIn({ email, password });
 		if (Object.keys(validationErrors).length !== 0) {
@@ -22,23 +22,26 @@ const SignIn = () => {
 			const signInRes = await signIn({ email, password });
 
 			console.log(signInRes);
-			localStorage.setItem('token', signInRes.token);
-			setSignedIn(true);
-			setCheckSession(true);
+			handleSignIn(signInRes.token);
 
 			return { error: null, success: true };
 		} catch (error) {
-			toast.error(error.message || 'Something went wrong!');
+			const msg = error instanceof Error ? error.message : 'Something went wrong!';
+			toast.error(msg);
 			return { error: null, success: false };
 		}
 	};
-	const [state, formAction, isPending] = useActionState(signinAction, { error: null, success: false });
+	const [state, formAction, isPending] = useActionState(signinAction, {
+		error: null,
+		success: false
+	} as SignInActionResult);
 	const [{ email, password }, setForm] = useState<SignInInput>({
 		email: '',
 		password: ''
 	});
 
-	const handleChange = e => setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
+	const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
+		setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
 
 	if (signedIn) return <Navigate to='/mypond' />;
 

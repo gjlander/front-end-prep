@@ -309,20 +309,34 @@ const signinAction = async (prevState, formData) => {
 
 - Our first step is to save the token in local storage, so that if the user came back to our site later they would stay signed in (because the token is a string, we don't need to stringify)
 - We also update our signed in state, and tell the app we need to check the session again
-- We need to import `useAuth` and destructure `setSignedIn` and `setCheckSession`
+- Let's create a function in `AuthProvider.jsx` to handle those 3 things, and then pass it to our context
+
+```js
+const handleSignIn = token => {
+	localStorage.setItem('token', token);
+	setSignedIn(true);
+	setCheckSession(true);
+};
+```
+
+- We need to import `useAuth` and destructure our `handleSignIn` function
 
 ```js
 import { useAuth } from '../context';
 // other stuff...
-const { setSignedIn, setCheckSession } = useAuth();
+const { signedIn, handleSignIn } = useAuth();
 ```
 
 ```js
 //in signinAction
+toast.success('Welcome back');
+
+const signInRes = await signIn({ email, password });
+
 console.log(signInRes);
-localStorage.setItem('token', signInRes.token);
-setSignedIn(true);
-setCheckSession(true);
+handleSignIn(signInRes.token);
+
+return { error: null, success: true };
 ```
 
 ## Getting user profile
@@ -383,6 +397,12 @@ const handleSignOut = () => {
 	setSignedIn(false);
 	setUser(null);
 };
+```
+
+- Then destructure and call in `Navbar.jsx`
+
+```js
+const { signedIn, handleSignOut } = useAuth();
 ```
 
 ## Protected Routes

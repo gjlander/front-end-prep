@@ -198,3 +198,197 @@ const [{ email, password }, setForm] = useState<SignInInput>({
 - Walk through articles locally
 - Highlight that you can either type the function, or the argument
 - Uses React types, and DOM types for element
+
+### SignIn
+
+- We can either type the whole function, or type the event parameter. Let's type the parameter this time, and the function for our duck form
+
+```ts
+import { useActionState, useState, type ChangeEvent } from 'react';
+
+const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
+	setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
+```
+
+### DuckForm
+
+```ts
+import { useActionState, useState, type ChangeEventHandler } from 'react';
+
+const handleChange: ChangeEventHandler<HTMLInputElement> = e => {
+	setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
+};
+```
+
+## Typing hooks
+
+- We haven't gone deep into some of these other hooks, like `useRef`, but you can use this as a reference if you'd like to use those hooks
+- With the React Compiler on it's way towards a stable release, `useMemo` and `useCallback` will become redundant
+
+## Context
+
+### AuthContext
+
+- If we go into `context/index.ts` we see we're getting TS errors when we call `createContext`
+- We need to pass an initial value, and let TS know what properties it might hold later (what gets passed as a value prop)
+- Since we'll also need this in `AuthProvider` we'll already declare it in `types`
+
+```ts
+export type AuthContextType = {
+	signedIn: boolean;
+	user: User | null;
+	handleSignIn: (token: string) => void;
+	handleSignOut: () => void;
+};
+```
+
+- Import it, and use it to type `createContext`. Since it will be undefined to start, we can explicitly pass that as the starting value
+
+```ts
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+```
+
+- `useAuth` now correctly infers the type, but for the sake of being thorough we can explicitly type it
+
+```ts
+const useAuth = () => {
+	const context = use(AuthContext);
+	if (!context) throw new Error('useAuth must be used within an AuthContextProvider');
+	return context;
+};
+```
+
+- Then we can import the type into `AuthProvider`, and use it to type our `value`
+
+```ts
+import type { User, AuthContextType } from '../types';
+
+const value: AuthContextType = {
+	signedIn,
+	user,
+	handleSignIn,
+	handleSignOut
+};
+return <AuthContext value={value}>{children}</AuthContext>;
+```
+
+- And now TS is happy when we destructure it in `SignIn`
+
+### DuckContext
+
+- We can do the same with our `DuckContext`
+- First make the type
+- Typing a setter function is a little funky, it's a nested generic. But we can see the syntax if we hover over it
+
+```ts
+export type DuckContextType = {
+	ducks: Duck[];
+	setDucks: Dispatch<SetStateAction<Duck[]>>;
+};
+```
+
+- Type our context and custom hook
+
+```ts
+const DuckContext = createContext<DuckContextType | undefined>(undefined);
+
+const useDucks = (): DuckContextType => {
+	const context = use(DuckContext);
+	if (!context) throw new Error('useDucks must be used within a DuckContext');
+	return context;
+};
+```
+
+- And type the `value`
+
+```ts
+const value: DuckContextType = { ducks, setDucks };
+return <DuckContext value={value}>{children}</DuckContext>;
+```
+
+## Actions and useActionState
+
+- As we continue typing our application, we also need to look at our actions and `useActionState`
+
+### DuckForm
+
+- For our `submitAction` we have 2 parameters
+  1.  `prevState` - which we'll need to figure out the type of
+  2.  `formData` - which will be a `FormData` object
+- We can start with `unknown` for now, and type cast our input values
+
+```ts
+async (prevState: unknown, formData: FormData): Promise<unknown> => {
+	const name = formData.get('name') as string;
+	const imgUrl = formData.get('imgUrl') as string;
+	const quote = formData.get('quote') as string;
+};
+```
+
+- Since we don't work with `prevState`, a common convention to let TS (and other developers) know that we won't be using this parameter is to name it `_`
+
+```ts
+async (_: unknown, formData: FormData): Promise<unknown> => {};
+```
+
+- While we're here, let's also clean up the error message in the catch block
+
+```ts
+const msg = error instanceof Error ? error.message : 'Something went wrong!';
+toast.error(msg);
+```
+
+#### typing the return
+
+- Since our action returns the action state, we'll need to use that to type both the return and the `state`
+
+```ts
+type ActionResult = {
+	error: null | Partial<DuckInput>;
+	success: boolean;
+};
+
+const submitAction = async (_: ActionResult, formData: FormData): Promise<ActionResult> => {};
+```
+
+- From experimentation, there seems to be a bug when using generic syntax with `useActionState`, so we can set the initial state with type casting
+
+```ts
+const [state, formAction, isPending] = useActionState(submitAction, { error: null, success: false } as ActionResult);
+```
+
+### SignIn
+
+- We can do the same process now in `SignIn`
+
+````ts
+const signinAction = async (_: ActionResult, formData: FormData): Promise<ActionResult> => {
+		const email = formData.get('email') as string;
+		const password = formData.get('password') as string;
+
+		const validationErrors = validateSignIn({ email, password });
+		if (Object.keys(validationErrors).length !== 0) {
+			return { error: validationErrors, success: false };
+		}
+		try {
+			toast.success('Welcome back');
+
+			const signInRes = await signIn({ email, password });
+
+			console.log(signInRes);
+			handleSignIn(signInRes.token);
+
+			return { error: null, success: true };
+		} catch (error) {
+			const msg = error instanceof Error ? error.message : 'Something went wrong!';
+			toast.error(msg);
+			return { error: null, success: false };
+		}
+	};
+	const [state, formAction, isPending] = useActionState(signinAction, { error: null, success: false } as ActionResult);
+	```
+````
+
+### making a generic ActionResult
+
+- You may have noticed that our `ActionResult` for both actions as almost exactly the same. Let's make it generic and share it from `types`
