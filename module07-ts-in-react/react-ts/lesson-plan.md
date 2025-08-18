@@ -92,7 +92,7 @@ const DuckCard = ({ imgUrl, name, quote }: DuckCardProps) => {};
 ## Typing our Duckpond state
 
 - We don't have a lot of props, but we do have a decent amount of state in
-  - AuthProvider.tsx, DuckProvider.tsx, DuckForm.tsx, SignIn.tsx
+  - AuthProvider.tsx, DuckProvider.tsx, DuckForm.tsx, SignIn.tsx, DuckPage.tsx
 
 ### AuthProvider
 
@@ -178,6 +178,22 @@ const [form, setForm] = useState<DuckInput>({
 	imgUrl: '',
 	quote: ''
 });
+```
+
+### DuckPage.tsx
+
+- We can also use ou `Duck` type for the `currDuck`
+
+```ts
+import type { Duck } from '../types';
+const [currDuck, setCurrDuck] = useState<Duck | null>(null);
+```
+
+- This reveals that our destructuring actually isn't so safe, so we can add a little check
+
+```ts
+if (!currDuck) return <div>Loading...</div>;
+const { name, imgUrl, quote } = currDuck;
 ```
 
 ### SignIn.tsx
@@ -392,3 +408,94 @@ const signinAction = async (_: ActionResult, formData: FormData): Promise<Action
 ### making a generic ActionResult
 
 - You may have noticed that our `ActionResult` for both actions as almost exactly the same. Let's make it generic and share it from `types`
+
+```ts
+export type DuckErrors = Partial<DuckInput>;
+
+export type SignInErrors = Partial<SignInInput>;
+
+export type ActionResult<T> = {
+	error: null | T;
+	success: boolean;
+};
+
+export type DuckActionResult = ActionResult<DuckErrors>;
+
+export type SignInActionResult = ActionResult<SignInErrors>;
+```
+
+- Then we import into `DuckForm.tsx` and `SignIn.tsx` to use them
+- `DuckForm`
+
+```ts
+import type { DuckInput, DuckActionResult } from '../../types';
+
+const submitAction = async (_: DuckActionResult, formData: FormData): Promise<DuckActionResult> => {};
+
+const [state, formAction, isPending] = useActionState(submitAction, {
+	error: null,
+	success: false
+} as DuckActionResult);
+```
+
+- `SignIn`
+
+```ts
+import type { SignInInput, SignInActionResult } from '../types';
+
+const signinAction = async (_: SignInActionResult, formData: FormData): Promise<SignInActionResult> => {};
+
+const [state, formAction, isPending] = useActionState(signinAction, {
+	error: null,
+	success: false
+} as SignInActionResult);
+```
+
+## Final Cleanup
+
+- If we run `npm run build` we see there's still a few errors we need to clean up
+
+`Navbar.tsx`
+
+```ts
+const showActive = ({ isActive }: { isActive: boolean }) => (isActive ? 'menu-active' : '');
+```
+
+`DuckProvider.tsx`
+
+- We need to confirm that it's an instance of the `Error` class
+
+```ts
+  catch (error) {
+				if (error instanceof Error && error.name === 'AbortError') {
+					console.info('Fetch aborted');
+				} else {
+					console.error(error);
+				}
+			}
+```
+
+`DuckPage.tsx`
+
+- `duckId` can be `undefined` so we pass an empty string in that case
+- We also need to check our error here too
+
+```ts
+(async () => {
+	try {
+		const duckData = await getDuckById(duckId ?? '', abortController);
+
+		setCurrDuck(duckData);
+	} catch (error) {
+		if (error instanceof Error && error.name === 'AbortError') {
+			console.info('Fetch aborted');
+		} else {
+			console.error(error);
+		}
+	}
+})();
+```
+
+- Now we can build without problem!
+
+#### Since React is just a JS library, all we're doing is applying the TS principles we learned last week to work with it. But we're still just typing function parameters via props in our functional components, or using generic syntax/type assertion for typing state

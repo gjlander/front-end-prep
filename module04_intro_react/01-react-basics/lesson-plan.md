@@ -73,21 +73,21 @@
 
 ```css
 * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
 }
 
 body {
-  background-color: lightgray;
+	background-color: lightgray;
 }
 
 #summon-btn {
-  background-color: aqua;
+	background-color: aqua;
 }
 
 .text-center {
-  text-align: center;
+	text-align: center;
 }
 ```
 
@@ -99,13 +99,13 @@ body {
 
 ```jsx
 <h1
-  style={{
-    backgroundColor: 'red',
-    padding: '1rem'
-  }}
-  className='text-6xl mb-6'
+	style={{
+		backgroundColor: 'red',
+		padding: '1rem'
+	}}
+	className='text-6xl mb-6'
 >
-  The Duck Pond
+	The Duck Pond
 </h1>
 ```
 
@@ -137,18 +137,18 @@ body {
 
 ```js
 const Navbar = () => {
-  return (
-    <nav className='flex justify-end bg-slate-800 py-2 px-8 text-2xl mb-6'>
-      <ul className='flex gap-6'>
-        <li className='p-2 rounded-lg hover:bg-slate-600'>
-          <a href='index.html'>Home</a>
-        </li>
-        <li className='p-2 rounded-lg hover:bg-slate-600'>
-          <a href='src/myPond.html'>My Pond</a>
-        </li>
-      </ul>
-    </nav>
-  );
+	return (
+		<nav className='flex justify-end bg-slate-800 py-2 px-8 text-2xl mb-6'>
+			<ul className='flex gap-6'>
+				<li className='p-2 rounded-lg hover:bg-slate-600'>
+					<a href='index.html'>Home</a>
+				</li>
+				<li className='p-2 rounded-lg hover:bg-slate-600'>
+					<a href='src/myPond.html'>My Pond</a>
+				</li>
+			</ul>
+		</nav>
+	);
 };
 
 export default Navbar;
@@ -165,19 +165,19 @@ export default Navbar;
 
 ```js
 const Header = () => {
-  return (
-    <header className='text-center'>
-      <h1
-        // style={{
-        //     backgroundColor: 'red',
-        //     padding: '1rem',
-        // }}
-        className='text-6xl mb-6'
-      >
-        The Duck Pond
-      </h1>
-    </header>
-  );
+	return (
+		<header className='text-center'>
+			<h1
+				// style={{
+				//     backgroundColor: 'red',
+				//     padding: '1rem',
+				// }}
+				className='text-6xl mb-6'
+			>
+				The Duck Pond
+			</h1>
+		</header>
+	);
 };
 
 export default Header;
@@ -187,7 +187,7 @@ export default Header;
 
 ```js
 const DuckPond = () => {
-  return <section id='pond' className='flex justify-center flex-wrap gap-4 p-4 w-full'></section>;
+	return <section id='pond' className='flex justify-center flex-wrap gap-4 p-4 w-full'></section>;
 };
 
 export default DuckPond;
@@ -197,43 +197,43 @@ export default DuckPond;
 
 ```js
 const DuckForm = () => {
-  return (
-    <section className='flex flex-col items-center gap-4 border-2 rounded-lg p-4 mx-8'>
-      <h2 className='text-4xl'>Add a new duck to my pond!</h2>
-      <form id='add-form' className='flex flex-col gap-4 w-3/4'>
-        <label className='w-full flex gap-2 items-baseline'>
-          <span className='text-xl'>Name:</span>
-          <input
-            id='name'
-            type='text'
-            placeholder="What is your duck's name?"
-            className='bg-inherit border-solid border-2 border-slate-700 rounded-lg p-2 flex-grow'
-          />
-        </label>
-        <label className='w-full flex gap-2 items-baseline'>
-          <span className='text-xl'>Image:</span>
-          <input
-            id='img-url'
-            type='url'
-            placeholder='What does your duck look like?'
-            className='bg-inherit border-solid border-2 border-slate-700 rounded-lg p-2 w-full'
-          />
-        </label>
-        <label className='w-full flex gap-2 items-baseline'>
-          <span className='text-xl'>Quote:</span>
-          <input
-            id='quote'
-            type='text'
-            placeholder='What does your duck say?'
-            className='bg-inherit border-solid border-2 border-slate-700 rounded-lg p-2 w-full'
-          />
-        </label>
-        <button type='submit' className='bg-green-600 p-2 rounded-lg font-bold'>
-          Add duck
-        </button>
-      </form>
-    </section>
-  );
+	return (
+		<section className='flex flex-col items-center gap-4 border-2 rounded-lg p-4 mx-8'>
+			<h2 className='text-4xl'>Add a new duck to my pond!</h2>
+			<form id='add-form' className='flex flex-col gap-4 w-3/4'>
+				<label className='w-full flex gap-2 items-baseline'>
+					<span className='text-xl'>Name:</span>
+					<input
+						id='name'
+						type='text'
+						placeholder="What is your duck's name?"
+						className='bg-inherit border-solid border-2 border-slate-700 rounded-lg p-2 flex-grow'
+					/>
+				</label>
+				<label className='w-full flex gap-2 items-baseline'>
+					<span className='text-xl'>Image:</span>
+					<input
+						id='img-url'
+						type='url'
+						placeholder='What does your duck look like?'
+						className='bg-inherit border-solid border-2 border-slate-700 rounded-lg p-2 w-full'
+					/>
+				</label>
+				<label className='w-full flex gap-2 items-baseline'>
+					<span className='text-xl'>Quote:</span>
+					<input
+						id='quote'
+						type='text'
+						placeholder='What does your duck say?'
+						className='bg-inherit border-solid border-2 border-slate-700 rounded-lg p-2 w-full'
+					/>
+				</label>
+				<button type='submit' className='bg-green-600 p-2 rounded-lg font-bold'>
+					Add duck
+				</button>
+			</form>
+		</section>
+	);
 };
 
 export default DuckForm;
@@ -243,11 +243,11 @@ export default DuckForm;
 
 ```js
 const Footer = () => {
-  return (
-    <footer className='flex justify-center bg-slate-800 py-4 text-2xl w-full'>
-      © Copyright Ducks on Ducks on Ducks, all rights reserved
-    </footer>
-  );
+	return (
+		<footer className='flex justify-center bg-slate-800 py-4 text-2xl w-full'>
+			© Copyright Ducks on Ducks on Ducks, all rights reserved
+		</footer>
+	);
 };
 
 export default Footer;
@@ -265,17 +265,17 @@ import DuckForm from './components/DuckForm';
 import Footer from './components/Footer';
 
 function App() {
-  return (
-    <div className='bg-slate-600 text-gray-300 flex flex-col min-h-screen'>
-      <Navbar />
-      <Header />
-      <main className='flex-grow flex flex-col justify-between py-4'>
-        <DuckPond />
-        <DuckForm />
-      </main>
-      <Footer />
-    </div>
-  );
+	return (
+		<div className='bg-slate-600 text-gray-300 flex flex-col min-h-screen'>
+			<Navbar />
+			<Header />
+			<main className='flex-grow flex flex-col justify-between py-4'>
+				<DuckPond />
+				<DuckForm />
+			</main>
+			<Footer />
+		</div>
+	);
 }
 
 export default App;
@@ -315,7 +315,7 @@ export default App;
 
 ```js
 const DuckCard = () => {
-  return <div>DuckCard</div>;
+	return <div>DuckCard</div>;
 };
 
 export default DuckCard;
@@ -328,11 +328,11 @@ export default DuckCard;
 import DuckCard from './DuckCard';
 
 const DuckPond = () => {
-  return (
-    <section id='pond' className='flex justify-center flex-wrap gap-4 p-4 w-full'>
-      <DuckCard />
-    </section>
-  );
+	return (
+		<section id='pond' className='flex justify-center flex-wrap gap-4 p-4 w-full'>
+			<DuckCard />
+		</section>
+	);
 };
 
 export default DuckPond;
@@ -342,11 +342,11 @@ export default DuckPond;
 
 ```js
 const singleDuck = {
-  _id: 1,
-  name: 'Sir Quacks-a-lot',
-  imgUrl:
-    'https://cdn11.bigcommerce.com/s-nf2x4/images/stencil/1280x1280/products/430/7841/Knight-Rubber-Duck-Yarto-2__93062.1576270637.jpg?c=2',
-  quote: 'I will slay your bugs!'
+	_id: 1,
+	name: 'Sir Quacks-a-lot',
+	imgUrl:
+		'https://cdn11.bigcommerce.com/s-nf2x4/images/stencil/1280x1280/products/430/7841/Knight-Rubber-Duck-Yarto-2__93062.1576270637.jpg?c=2',
+	quote: 'I will slay your bugs!'
 };
 ```
 
@@ -395,18 +395,18 @@ const singleDuck = {
 ```js
 import DuckCard from './DuckCard';
 const singleDuck = {
-  _id: 1,
-  name: 'Sir Quacks-a-lot',
-  imgUrl:
-    'https://cdn11.bigcommerce.com/s-nf2x4/images/stencil/1280x1280/products/430/7841/Knight-Rubber-Duck-Yarto-2__93062.1576270637.jpg?c=2',
-  quote: 'I will slay your bugs!'
+	_id: 1,
+	name: 'Sir Quacks-a-lot',
+	imgUrl:
+		'https://cdn11.bigcommerce.com/s-nf2x4/images/stencil/1280x1280/products/430/7841/Knight-Rubber-Duck-Yarto-2__93062.1576270637.jpg?c=2',
+	quote: 'I will slay your bugs!'
 };
 const DuckPond = () => {
-  return (
-    <section id='pond' className='flex justify-center flex-wrap gap-4 p-4 w-full'>
-      <DuckCard duck={singleDuck} />
-    </section>
-  );
+	return (
+		<section id='pond' className='flex justify-center flex-wrap gap-4 p-4 w-full'>
+			<DuckCard duck={singleDuck} />
+		</section>
+	);
 };
 
 export default DuckPond;
@@ -424,8 +424,8 @@ export default DuckPond;
 
 ```js
 const DuckCard = ({ duck, prop2 }) => {
-  console.log(duck, prop2);
-  //component...
+	console.log(duck, prop2);
+	//component...
 };
 ```
 
@@ -438,10 +438,10 @@ const DuckCard = ({ duck, prop2 }) => {
 
 - Now we update our dot notation to the prop name, and it works again!
 
-### Using spread operator to deconstruct individual props
+### Using spread operator to destructure individual props
 
 - Passing the whole duck can be useful if we need the whole duck, but since we know exactly which properties we need, we have another option
-- We can use the spread operator to pass down the duck, and directly deconstruct just the properties we need
+- We can use the spread operator to pass down the duck, and directly destructure just the properties we need
 
 ```js
 <DuckCard duck={singleDuck} {...duck} prop2="I'm also here" />
@@ -451,19 +451,19 @@ const DuckCard = ({ duck, prop2 }) => {
 
 ```js
 const DuckCard = ({ imgUrl, name, quote }) => {
-  // console.log(duck, prop2);
+	// console.log(duck, prop2);
 
-  return (
-    <div className='shadow-xl hover:shadow-2xl hover:cursor-pointer w-96 rounded-md m-auto flex-flex-col'>
-      <figure className='rounded-t-md overflow-hidden w-full h-96'>
-        <img className='w-full h-full' src={imgUrl} alt={name} />
-      </figure>
-      <div className='flex flex-col p-6 pt-2 rounded-b-md bg-slate-800 h-40'>
-        <h2 className='text-3xl border-b-2 mb-4 border-b-gray-400'>{name}</h2>
-        <p>{quote}</p>
-      </div>
-    </div>
-  );
+	return (
+		<div className='shadow-xl hover:shadow-2xl hover:cursor-pointer w-96 rounded-md m-auto flex-flex-col'>
+			<figure className='rounded-t-md overflow-hidden w-full h-96'>
+				<img className='w-full h-full' src={imgUrl} alt={name} />
+			</figure>
+			<div className='flex flex-col p-6 pt-2 rounded-b-md bg-slate-800 h-40'>
+				<h2 className='text-3xl border-b-2 mb-4 border-b-gray-400'>{name}</h2>
+				<p>{quote}</p>
+			</div>
+		</div>
+	);
 };
 
 export default DuckCard;
@@ -482,7 +482,7 @@ export default DuckCard;
 
 ```js
 {
-  ducksInThePond.map(duck => <DuckCard {...duck} />);
+	ducksInThePond.map(duck => <DuckCard {...duck} />);
 }
 ```
 
@@ -503,22 +503,22 @@ export default DuckCard;
 
 ```js
 const Navbar = () => {
-  const isSignedIn = false;
-  return (
-    <nav className='flex justify-end bg-slate-800 py-2 px-8 text-2xl mb-6'>
-      <ul className='flex gap-6'>
-        <li className='p-2 rounded-lg hover:bg-slate-600'>
-          <a href='index.html'>Home</a>
-        </li>
-        <li className='p-2 rounded-lg hover:bg-slate-600'>
-          <a href='src/myPond.html'>My Pond</a>
-        </li>
-        <li className='p-2 rounded-lg hover:bg-slate-600'>
-          {isSignedIn ? <button>Sign Out</button> : <button>Sign In</button>}
-        </li>
-      </ul>
-    </nav>
-  );
+	const isSignedIn = false;
+	return (
+		<nav className='flex justify-end bg-slate-800 py-2 px-8 text-2xl mb-6'>
+			<ul className='flex gap-6'>
+				<li className='p-2 rounded-lg hover:bg-slate-600'>
+					<a href='index.html'>Home</a>
+				</li>
+				<li className='p-2 rounded-lg hover:bg-slate-600'>
+					<a href='src/myPond.html'>My Pond</a>
+				</li>
+				<li className='p-2 rounded-lg hover:bg-slate-600'>
+					{isSignedIn ? <button>Sign Out</button> : <button>Sign In</button>}
+				</li>
+			</ul>
+		</nav>
+	);
 };
 
 export default Navbar;
@@ -535,7 +535,7 @@ export default Navbar;
 
 ```js
 const handleChange = e => {
-  console.log(e.target.value);
+	console.log(e.target.value);
 };
 ```
 
@@ -543,11 +543,11 @@ const handleChange = e => {
 
 ```jsx
 <input
-  onChange={handleChange}
-  id='name'
-  type='text'
-  placeholder="What is your duck's name?"
-  className='bg-inherit border-solid border-2 border-slate-700 rounded-lg p-2 flex-grow'
+	onChange={handleChange}
+	id='name'
+	type='text'
+	placeholder="What is your duck's name?"
+	className='bg-inherit border-solid border-2 border-slate-700 rounded-lg p-2 flex-grow'
 />
 ```
 
@@ -555,11 +555,11 @@ const handleChange = e => {
 
 ```jsx
 <input
-  onChange={e => console.log(e.target.value)}
-  id='img-url'
-  type='url'
-  placeholder='What does your duck look like?'
-  className='bg-inherit border-solid border-2 border-slate-700 rounded-lg p-2 w-full'
+	onChange={e => console.log(e.target.value)}
+	id='img-url'
+	type='url'
+	placeholder='What does your duck look like?'
+	className='bg-inherit border-solid border-2 border-slate-700 rounded-lg p-2 w-full'
 />
 ```
 

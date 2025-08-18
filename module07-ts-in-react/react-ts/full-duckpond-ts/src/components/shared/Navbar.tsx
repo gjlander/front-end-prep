@@ -3,7 +3,7 @@ import { useAuth } from '../../context';
 const Navbar = () => {
 	const { signedIn, handleSignOut } = useAuth();
 
-	const showActive = ({ isActive }) => (isActive ? 'menu-active' : '');
+	const showActive = ({ isActive }: { isActive: boolean }) => (isActive ? 'menu-active' : '');
 	return (
 		<div className='navbar bg-slate-800 '>
 			<div className='navbar-start'>

@@ -1,18 +1,13 @@
-import type { DuckInput } from '../../types';
+import type { DuckInput, DuckActionResult } from '../../types';
 import { useActionState, useState, type ChangeEventHandler } from 'react';
 import { toast } from 'react-toastify';
 import { useDucks } from '../../context';
 import { createDuck } from '../../data';
 import { validateDuckForm, sleep } from '../../utils';
 
-type ActionResult = {
-	error: null | Partial<DuckInput>;
-	success: boolean;
-};
-
 const DuckForm = () => {
 	const { setDucks } = useDucks();
-	const submitAction = async (_: ActionResult, formData: FormData): Promise<ActionResult> => {
+	const submitAction = async (_: DuckActionResult, formData: FormData): Promise<DuckActionResult> => {
 		const name = formData.get('name') as string;
 		const imgUrl = formData.get('imgUrl') as string;
 		const quote = formData.get('quote') as string;
@@ -36,7 +31,10 @@ const DuckForm = () => {
 			return { error: null, success: false };
 		}
 	};
-	const [state, formAction, isPending] = useActionState(submitAction, { error: null, success: false } as ActionResult);
+	const [state, formAction, isPending] = useActionState(submitAction, {
+		error: null,
+		success: false
+	} as DuckActionResult);
 	const [form, setForm] = useState<DuckInput>({
 		name: '',
 		imgUrl: '',

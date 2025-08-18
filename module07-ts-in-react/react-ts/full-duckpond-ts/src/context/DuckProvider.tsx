@@ -18,7 +18,7 @@ const DuckProvider = ({ children }: DuckProviderProps) => {
 
 				setDucks(allDucks);
 			} catch (error) {
-				if (error.name === 'AbortError') {
+				if (error instanceof Error && error.name === 'AbortError') {
 					console.info('Fetch aborted');
 				} else {
 					console.error(error);
