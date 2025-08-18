@@ -18,7 +18,7 @@ const signIn = async (formData: SignInInput): Promise<SignInRes> => {
 	});
 	if (!res.ok) throw new Error(`${res.status}. Something went wrong!`);
 
-	const data = await res.json();
+	const data = (await res.json()) as SignInRes;
 	// console.log(data);
 
 	return data;
@@ -34,7 +34,7 @@ const me = async (): Promise<User> => {
 	});
 	if (!res.ok) throw new Error(`${res.status}. Something went wrong!`);
 
-	const data = await res.json();
+	const data = (await res.json()) as User;
 	// console.log(data);
 
 	return data;
