@@ -1,12 +1,7 @@
-import type { User, SignInInput } from '../types';
+import type { User, SignInInput, SignInRes } from '../types';
+import { z } from 'zod/v4';
+import { SignInResSchema, UserSchema } from '../schemas';
 const BASE_URL = 'https://duckpond-89zn.onrender.com/auth';
-
-type SignInRes = {
-	token: string;
-	user: {
-		userId: string;
-	};
-};
 
 const signIn = async (formData: SignInInput): Promise<SignInRes> => {
 	const res = await fetch(`${BASE_URL}/signin`, {
@@ -18,8 +13,9 @@ const signIn = async (formData: SignInInput): Promise<SignInRes> => {
 	});
 	if (!res.ok) throw new Error(`${res.status}. Something went wrong!`);
 
-	const data = (await res.json()) as SignInRes;
-	// console.log(data);
+	const dataRes = await res.json();
+	const { success, data, error } = SignInResSchema.safeParse(dataRes);
+	if (!success) throw new Error(z.prettifyError(error));
 
 	return data;
 };
@@ -34,8 +30,9 @@ const me = async (): Promise<User> => {
 	});
 	if (!res.ok) throw new Error(`${res.status}. Something went wrong!`);
 
-	const data = (await res.json()) as User;
-	// console.log(data);
+	const dataRes = await res.json();
+	const { success, data, error } = UserSchema.safeParse(dataRes);
+	if (!success) throw new Error(z.prettifyError(error));
 
 	return data;
 };

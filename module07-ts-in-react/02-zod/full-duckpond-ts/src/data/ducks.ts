@@ -1,11 +1,16 @@
-import type { DuckInput, Duck } from '../types';
+import type { DuckInput, Duck, DuckArray } from '../types';
+import { z } from 'zod/v4';
 
-const getAllDucks = async (abortCont: AbortController): Promise<Duck[]> => {
+import { DuckSchema, DuckSchemaArray } from '../schemas';
+
+const getAllDucks = async (abortCont: AbortController): Promise<DuckArray> => {
 	const res = await fetch('https://duckpond-89zn.onrender.com/wild-ducks', {
 		signal: abortCont.signal
 	});
 	if (!res.ok) throw new Error(`${res.status}. Something went wrong!`);
-	const data = (await res.json()) as Duck[];
+	const dataRes = await res.json();
+	const { success, data, error } = DuckSchemaArray.safeParse(dataRes);
+	if (!success) throw new Error(z.prettifyError(error));
 	// console.log(data);
 
 	return data;
@@ -17,7 +22,10 @@ const getDuckById = async (id: string, abortCont: AbortController): Promise<Duck
 	});
 	if (!res.ok) throw new Error(`${res.status}. Something went wrong!`);
 
-	const data = (await res.json()) as Duck;
+	const dataRes = await res.json();
+	const { success, data, error } = DuckSchema.safeParse(dataRes);
+	if (!success) throw new Error(z.prettifyError(error));
+	// console.log(data);
 
 	return data;
 };
@@ -29,7 +37,11 @@ const createDuck = async (newDuck: DuckInput): Promise<Duck> => {
 		body: JSON.stringify(newDuck)
 	});
 	if (!res.ok) throw new Error(`${res.status}. Something went wrong!`);
-	const data = (await res.json()) as Duck;
+	const dataRes = await res.json();
+	const { success, data, error } = DuckSchema.safeParse(dataRes);
+	if (!success) throw new Error(z.prettifyError(error));
+	// console.log(data);
+
 	return data;
 };
 
