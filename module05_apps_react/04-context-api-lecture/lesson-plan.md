@@ -22,12 +22,12 @@
 
 ```js
 const NoContextParent = ({ user }) => {
-  return (
-    <div className='parent'>
-      <code>Prop Drilling Parent</code>
-      <NoContextChild user={user} />
-    </div>
-  );
+	return (
+		<div className='parent'>
+			<code>Prop Drilling Parent</code>
+			<NoContextChild user={user} />
+		</div>
+	);
 };
 ```
 
@@ -35,12 +35,12 @@ const NoContextParent = ({ user }) => {
 
 ```js
 const NoContextChild = ({ user }) => {
-  return (
-    <div className='child'>
-      <code>Prop Drilling Child</code>
-      <NoContextGranChild user={user} />
-    </div>
-  );
+	return (
+		<div className='child'>
+			<code>Prop Drilling Child</code>
+			<NoContextGranChild user={user} />
+		</div>
+	);
 };
 ```
 
@@ -66,7 +66,7 @@ export const UserContext = createContext();
 
 ```js
 <UserContext value={user}>
-  <ContextParent />
+	<ContextParent />
 </UserContext>
 ```
 
@@ -79,13 +79,13 @@ export const UserContext = createContext();
 import { use } from 'react';
 import { UserContext } from '../App';
 const ContextGranChild = () => {
-  // Use the useContext hook to access the user object
-  const user = use(UserContext);
-  return (
-    <div className='text-2xl text-center'>
-      Hello there my name is {user.name} and I am {user.age} years old
-    </div>
-  );
+	// Use the useContext hook to access the user object
+	const user = use(UserContext);
+	return (
+		<div className='text-2xl text-center'>
+			Hello there my name is {user.name} and I am {user.age} years old
+		</div>
+	);
 };
 
 export default ContextGranChild;
@@ -105,9 +105,9 @@ export default ContextGranChild;
 ```js
 import { createContext } from 'react';
 
-const AuthContext = createContext();
+const DuckContext = createContext();
 
-export { AuthContext };
+export { DuckContext };
 ```
 
 - Now back in `MainLayout.jsx`, we import the DuckContext, and wrap our whole application in it
@@ -119,24 +119,24 @@ import { DuckContext } from '../context';
 import { Navbar, Footer } from '../components';
 
 const MainLayout = () => {
-  return (
-    <DuckContext>
-      <div className='bg-slate-600 text-gray-300 flex flex-col min-h-screen'>
-        <Navbar />
-        <main className='flex-grow flex flex-col justify-between py-4'>
-          <Outlet />
-        </main>
-        <Footer />
-        <ToastContainer />
-      </div>
-    </DuckContext>
-  );
+	return (
+		<DuckContext>
+			<div className='bg-slate-600 text-gray-300 flex flex-col min-h-screen'>
+				<Navbar />
+				<main className='flex-grow flex flex-col justify-between py-4'>
+					<Outlet />
+				</main>
+				<Footer />
+				<ToastContainer />
+			</div>
+		</DuckContext>
+	);
 };
 
 export default MainLayout;
 ```
 
-- Now let's initialize our `ducks` state in `MainLayout.jsx` instead of `Home.jsx`
+- Now let's initialize our `ducks` state in `MainLayout.jsx` instead of `Home.jsx`, along with our `error` and `loading` states
 
 ```js
 import { useState, useEffect } from 'react';
@@ -147,37 +147,43 @@ import { DuckContext } from '../context';
 import { Navbar, Footer } from '../components';
 
 const MainLayout = () => {
-  const [ducks, setDucks] = useState([]);
-  useEffect(() => {
-    const abortController = new AbortController();
-    (async () => {
-      try {
-        const allDucks = await getAllDucks(abortController);
+	const [ducks, setDucks] = useState([]);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState(null);
+	useEffect(() => {
+		const abortController = new AbortController();
+		(async () => {
+			setLoading(true);
+			setError(null);
+			try {
+				const duckData = await getAllDucks(abortController);
+				setDucks(duckData);
+			} catch (error) {
+				if (error.name === 'AbortError') {
+					console.info('Fetch Aborted');
+				} else {
+					console.error(error);
+					setError('Error bringing ducks to the pond.');
+				}
+			} finally {
+				setLoading(false);
+			}
+		})();
 
-        setDucks(allDucks);
-      } catch (error) {
-        if (error.name === 'AbortError') {
-          console.info('Fetch aborted');
-        } else {
-          console.error(error);
-        }
-      }
-    })();
-
-    return () => {
-      abortController.abort();
-    };
-  }, []);
-  // jsx...
+		return () => {
+			abortController.abort();
+		};
+	}, []);
+	// jsx...
 };
 ```
 
-- Then we pass our duck state and setter as `value` to our `DuckContext`
+- Then we pass our states and setters that other components will need as `value` to our `DuckContext`
 
   - Since we're passing several values now, we'll use the double `{}` syntax to pass them as an object
 
 ```js
- <DuckContext value={{ ducks, setDucks }}>
+ <DuckContext value={{ ducks, setDucks, loading, error }}>
 ```
 
 - Now back in `Home.jsx` we can clear out the state and useEffect, and since `Home` doesn't need the state anyway, we can move directly into `DuckPond` instead of passing props (we can do this since we won't use the `myDucks` state anymore either, otherwise we would still pass it as props to `DuckPond`)
@@ -196,36 +202,52 @@ import DuckCard from './DuckCard';
 
 ```js
 const DuckPond = () => {
-  const context = use(DuckContext);
-  console.log(context);
-  return (
-    <section id='pond' className='flex justify-center flex-wrap gap-4 p-4 w-full'>
-      {/* {ducks.map(duck => (
+	const context = use(DuckContext);
+	console.log(context);
+	return (
+		<section
+			id='pond'
+			className='flex justify-center flex-wrap gap-4 p-4 w-full'
+		>
+			{/* {ducks.map(duck => (
         <Link key={duck._id} to={`ducks/${duck._id}`}>
           <DuckCard {...duck} />
         </Link>
       ))} */}
-    </section>
-  );
+		</section>
+	);
 };
 ```
 
-- In the logs, we see that we now have an object with a `ducks` and `setDucks` property, exactly what we'd expect based on the `value` we passed
-- Since we're only concerned with our state, we can destructure it right away, and use it
+- In the logs, we see that we now have an object with a `ducks`, `setDucks`, `error`, and `loading` properties, exactly what we'd expect based on the `value` we passed
+- Since we're only concerned with our states, we can destructure it right away, and use it
 
 ```js
 const DuckPond = () => {
-  const { ducks } = use(DuckContext);
-  // console.log(context);
-  return (
-    <section id='pond' className='flex justify-center flex-wrap gap-4 p-4 w-full'>
-      {ducks.map(duck => (
-        <Link key={duck._id} to={`ducks/${duck._id}`}>
-          <DuckCard {...duck} />
-        </Link>
-      ))}
-    </section>
-  );
+	const { ducks, loading, error } = use(DuckContext);
+	// console.log(context);
+	return (
+		<section
+			id='pond'
+			className='flex justify-center flex-wrap gap-4 p-4 w-full'
+		>
+			{loading && (
+				<p className='text-center font-medium text-4xl'>Loading...</p>
+			)}
+			{error && (
+				<p className='text-center text-red-500 font-semibold text-4xl'>
+					{error}
+				</p>
+			)}
+			{!loading &&
+				!error &&
+				ducks.map(duck => (
+					<Link key={duck._id} to={`ducks/${duck._id}`}>
+						<DuckCard {...duck} />
+					</Link>
+				))}
+		</section>
+	);
 };
 ```
 
@@ -239,12 +261,12 @@ const DuckPond = () => {
 import { DuckPond, UseActionState } from '../components';
 
 const MyPond = () => {
-  return (
-    <>
-      <DuckPond />
-      <UseActionState />
-    </>
-  );
+	return (
+		<>
+			<DuckPond />
+			<UseActionState />
+		</>
+	);
 };
 
 export default MyPond;
@@ -260,8 +282,8 @@ import { createDuck } from '../../data';
 import { validateDuckForm, sleep } from '../../utils';
 
 const DuckForm = () => {
-  const { setDucks } = use(DuckContext);
-  // rest of component...
+	const { setDucks } = use(DuckContext);
+	// rest of component...
 };
 ```
 
@@ -281,8 +303,8 @@ import { createContext, use } from 'react';
 const DuckContext = createContext();
 
 const useDucks = () => {
-  const context = use(DuckContext);
-  return context;
+	const context = use(DuckContext);
+	return context;
 };
 
 export { DuckContext, useDucks };
@@ -292,9 +314,9 @@ export { DuckContext, useDucks };
 
 ```js
 const useDucks = () => {
-  const context = use(DuckContext);
-  if (!context) throw new Error('useDucks must be used within a DuckContext');
-  return context;
+	const context = use(DuckContext);
+	if (!context) throw new Error('useDucks must be used within a DuckContext');
+	return context;
 };
 ```
 
@@ -307,8 +329,8 @@ import { useDucks } from '../../context';
 import DuckCard from './DuckCard';
 
 const DuckPond = () => {
-  const { ducks } = useDucks();
-  // rest of component...
+	const { ducks } = useDucks();
+	// rest of component...
 };
 ```
 
@@ -322,23 +344,8 @@ import { createDuck } from '../../data';
 import { validateDuckForm, sleep } from '../../utils';
 
 const DuckForm = () => {
-  const { setDucks } = useDucks();
-  // rest of component...
-};
-```
-
-- `MyPond.jsx`
-
-```js
-import { useState } from 'react';
-import { Navigate } from 'react-router';
-import { useAuth } from '../context/context';
-import DuckPond from '../components/DuckPond';
-import DuckForm from '../components/DuckForm';
-
-const MyPond = () => {
-  const [myDucks, setMyDucks] = useState(JSON.parse(localStorage.getItem('myDucks')) || []);
-  const { signedIn } = useAuth();
+	const { setDucks } = useDucks();
+	// rest of component...
 };
 ```
 
@@ -357,28 +364,36 @@ import { getAllDucks } from '../data';
 import { DuckContext } from '../context';
 
 const DuckProvider = () => {
-  const [ducks, setDucks] = useState([]);
-  useEffect(() => {
-    const abortController = new AbortController();
-    (async () => {
-      try {
-        const allDucks = await getAllDucks(abortController);
+	const [ducks, setDucks] = useState([]);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState(null);
+	useEffect(() => {
+		const abortController = new AbortController();
+		(async () => {
+			setLoading(true);
+			setError(null);
+			try {
+				const duckData = await getAllDucks(abortController);
+				setDucks(duckData);
+			} catch (error) {
+				if (error.name === 'AbortError') {
+					console.info('Fetch Aborted');
+				} else {
+					console.error(error);
+					setError('Error bringing ducks to the pond.');
+				}
+			} finally {
+				setLoading(false);
+			}
+		})();
 
-        setDucks(allDucks);
-      } catch (error) {
-        if (error.name === 'AbortError') {
-          console.info('Fetch aborted');
-        } else {
-          console.error(error);
-        }
-      }
-    })();
-
-    return () => {
-      abortController.abort();
-    };
-  }, []);
-  return <DuckContext value={{ ducks, setDucks }}></DuckContext>;
+		return () => {
+			abortController.abort();
+		};
+	}, []);
+	return (
+		<DuckContext value={{ ducks, setDucks, loading, error }}></DuckContext>
+	);
 };
 
 export default DuckProvider;
@@ -392,9 +407,9 @@ import DuckProvider from './DuckProvider';
 const DuckContext = createContext();
 
 const useDucks = () => {
-  const context = use(DuckContext);
-  if (!context) throw new Error('useDucks must be used within a DuckContext');
-  return context;
+	const context = use(DuckContext);
+	if (!context) throw new Error('useDucks must be used within a DuckContext');
+	return context;
 };
 
 export { DuckContext, useDucks, DuckProvider };
@@ -409,18 +424,18 @@ import { DuckProvider } from '../context';
 import { Navbar, Footer } from '../components';
 
 const MainLayout = () => {
-  return (
-    <DuckProvider>
-      <div className='bg-slate-600 text-gray-300 flex flex-col min-h-screen'>
-        <Navbar />
-        <main className='flex-grow flex flex-col justify-between py-4'>
-          <Outlet />
-        </main>
-        <Footer />
-        <ToastContainer />
-      </div>
-    </DuckProvider>
-  );
+	return (
+		<DuckProvider>
+			<div className='bg-slate-600 text-gray-300 flex flex-col min-h-screen'>
+				<Navbar />
+				<main className='flex-grow flex flex-col justify-between py-4'>
+					<Outlet />
+				</main>
+				<Footer />
+				<ToastContainer />
+			</div>
+		</DuckProvider>
+	);
 };
 
 export default MainLayout;
@@ -431,7 +446,7 @@ export default MainLayout;
 
 ```js
 <DuckContext value={{ ducks, setDucks }}>
-  <div>Where's my stuff?</div>
+	<div>Where's my stuff?</div>
 </DuckContext>
 ```
 
@@ -440,8 +455,8 @@ export default MainLayout;
 
 ```js
 const DuckProvider = ({ children }) => {
-  // app logic...
-  return <DuckContext value={{ ducks, setDucks }}>{children}</DuckContext>;
+	// app logic...
+	return <DuckContext value={{ ducks, setDucks }}>{children}</DuckContext>;
 };
 ```
 

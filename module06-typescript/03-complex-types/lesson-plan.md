@@ -19,8 +19,6 @@
 - Type aliases vs interfaces
   - intersections
 - Function types
-  - optional parameters
-  - default parameters
 
 ## Typing Arrays
 
@@ -73,8 +71,8 @@ const graphCoordinates: [number, number, number?] = [23, -3];
 
 ```js
 const person = {
-  name: 'Steve',
-  age: 72
+	name: 'Steve',
+	age: 72
 };
 
 person.name = 54;
@@ -84,8 +82,8 @@ person.name = 54;
 
 ```ts
 const person: { name: string; age: number } = {
-  name: 'Steve',
-  age: 72
+	name: 'Steve',
+	age: 72
 };
 ```
 
@@ -95,8 +93,8 @@ const person: { name: string; age: number } = {
 
 ```ts
 const person: { name: string; age: number; city?: string } = {
-  name: 'Steve',
-  age: 72
+	name: 'Steve',
+	age: 72
 };
 
 // person.name = 54;
@@ -151,7 +149,7 @@ console.log(null ?? 'Default');
 
 ```ts
 if (person.city) {
-  console.log(person.city.toUpperCase());
+	console.log(person.city.toUpperCase());
 }
 ```
 
@@ -163,8 +161,8 @@ if (person.city) {
 
 ```ts
 const person: { readonly name: string; age: number; city?: string } = {
-  name: 'Steve',
-  age: 72
+	name: 'Steve',
+	age: 72
 };
 
 // person.name = 54;
@@ -177,10 +175,10 @@ person.name = 'Alex';
 
 ```ts
 const person: { id: number | string; readonly name: string; age: number; city?: string } = {
-  //   id: 3,
-  id: '485ghf-394',
-  name: 'Steve',
-  age: 72
+	//   id: 3,
+	id: '485ghf-394',
+	name: 'Steve',
+	age: 72
 };
 ```
 
@@ -190,8 +188,8 @@ const person: { id: number | string; readonly name: string; age: number; city?: 
 
 ```ts
 const users: { name: string; age: number }[] = [
-  { name: 'Ada', age: 36 },
-  { name: 'Grace', age: 30 }
+	{ name: 'Ada', age: 36 },
+	{ name: 'Grace', age: 30 }
 ];
 
 console.log(users);
@@ -199,7 +197,7 @@ console.log(users);
 // users.push({ name: 'Linus' });
 
 users.forEach(user => {
-  console.log(`${user.name} is ${user.age} years old`);
+	console.log(`${user.name} is ${user.age} years old`);
 });
 ```
 
@@ -217,16 +215,16 @@ type Person = { id: number | string; readonly name: string; age: number; city?: 
 
 ```ts
 const person: Person = {
-  //   id: 3,
-  id: '485ghf-394',
-  name: 'Steve',
-  age: 72
+	//   id: 3,
+	id: '485ghf-394',
+	name: 'Steve',
+	age: 72
 };
 
 const person2: Person = {
-  id: 4,
-  name: 'Reed',
-  age: 43
+	id: 4,
+	name: 'Reed',
+	age: 43
 };
 ```
 
@@ -255,13 +253,13 @@ type Person = { id: StringOrNumber; readonly name: string; age: number; city?: s
 
 ```ts
 interface User {
-  name: string;
-  age: number;
+	name: string;
+	age: number;
 }
 
 const users: User[] = [
-  { name: 'Ada', age: 36 },
-  { name: 'Grace', age: 30 }
+	{ name: 'Ada', age: 36 },
+	{ name: 'Grace', age: 30 }
 ];
 ```
 
@@ -275,8 +273,8 @@ const users: User[] = [
 
 ```ts
 type DBEntry = {
-  _id: string;
-  createdAt: string;
+	_id: string;
+	createdAt: string;
 };
 ```
 
@@ -284,9 +282,9 @@ type DBEntry = {
 
 ```ts
 type DBUser = DBEntry & {
-  name: string;
-  email: string;
-  password: string;
+	name: string;
+	email: string;
+	password: string;
 };
 ```
 
@@ -294,11 +292,11 @@ type DBUser = DBEntry & {
 
 ```ts
 const user: DBUser = {
-  _id: '123fhgksaw',
-  name: 'Steve Rogers',
-  email: 'captain@america.com',
-  createdAt: '2025-08-01',
-  password: 'stevepass'
+	_id: '123fhgksaw',
+	name: 'Steve Rogers',
+	email: 'captain@america.com',
+	createdAt: '2025-08-01',
+	password: 'stevepass'
 };
 ```
 
@@ -306,22 +304,22 @@ const user: DBUser = {
 
 ```ts
 interface DBEntryInterface {
-  _id: string;
-  createdAt: string;
+	_id: string;
+	createdAt: string;
 }
 
 interface DBUserInterface extends DBEntryInterface {
-  name: string;
-  email: string;
-  password: string;
+	name: string;
+	email: string;
+	password: string;
 }
 
 const user2: DBUserInterface = {
-  _id: '123fhgksaw',
-  name: 'Steve Rogers',
-  email: 'captain@america.com',
-  createdAt: '2025-08-01',
-  password: 'stevepass'
+	_id: '123fhgksaw',
+	name: 'Steve Rogers',
+	email: 'captain@america.com',
+	createdAt: '2025-08-01',
+	password: 'stevepass'
 };
 ```
 

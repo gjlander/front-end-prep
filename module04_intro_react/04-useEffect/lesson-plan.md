@@ -21,12 +21,12 @@
 
 ```js
 const getAllDucks = async () => {
-  const res = await fetch('https://duckpond-89zn.onrender.com/wild-ducks');
-  if (!res.ok) throw new Error(`${res.status}. Something went wrong!`);
-  const data = await res.json();
-  // console.log(data);
+	const res = await fetch('https://duckpond-89zn.onrender.com/wild-ducks');
+	if (!res.ok) throw new Error(`${res.status}. Something went wrong!`);
+	const data = await res.json();
+	// console.log(data);
 
-  return data;
+	return data;
 };
 
 export { getAllDucks };
@@ -53,7 +53,7 @@ useEffect(() => {}, []);
 
 ```js
 useEffect(async () => {
-  const ducks = await getAllDucks();
+	const ducks = await getAllDucks();
 }, []);
 ```
 
@@ -64,8 +64,8 @@ useEffect(async () => {
 
 ```js
 const getAndSetDucks = async () => {
-  const allDucks = await getAllDucks();
-  setDucks(allDucks);
+	const allDucks = await getAllDucks();
+	setDucks(allDucks);
 };
 getAndSetDucks();
 ```
@@ -75,10 +75,10 @@ getAndSetDucks();
 
 ```js
 useEffect(() => {
-  (async () => {
-    const allDucks = await getAllDucks();
-    setDucks(allDucks);
-  })();
+	(async () => {
+		const allDucks = await getAllDucks();
+		setDucks(allDucks);
+	})();
 }, []);
 ```
 
@@ -87,13 +87,13 @@ useEffect(() => {
 
 ```js
 (async () => {
-  try {
-    const allDucks = await getAllDucks();
+	try {
+		const allDucks = await getAllDucks();
 
-    setDucks(allDucks);
-  } catch (error) {
-    console.error(error);
-  }
+		setDucks(allDucks);
+	} catch (error) {
+		console.error(error);
+	}
 })();
 ```
 
@@ -105,24 +105,24 @@ useEffect(() => {
 
 ```js
 useEffect(() => {
-  const abortController = new AbortController();
-  (async () => {
-    try {
-      const allDucks = await getAllDucks();
+	const abortController = new AbortController();
+	(async () => {
+		try {
+			const allDucks = await getAllDucks();
 
-      setDucks(allDucks);
-    } catch (error) {
-      if (error.name === 'AbortError') {
-        console.info('Fetch aborted');
-      } else {
-        console.error(error);
-      }
-    }
-  })();
+			setDucks(allDucks);
+		} catch (error) {
+			if (error.name === 'AbortError') {
+				console.info('Fetch aborted');
+			} else {
+				console.error(error);
+			}
+		}
+	})();
 
-  return () => {
-    abortController.abort();
-  };
+	return () => {
+		abortController.abort();
+	};
 }, []);
 ```
 
@@ -136,17 +136,100 @@ const allDucks = await getAllDucks(abortController);
 
 ```js
 const getAllDucks = async abortCont => {
-  const res = await fetch('https://duckpond-89zn.onrender.com/wild-ducks', {
-    signal: abortCont.signal
-  });
-  if (!res.ok) throw new Error(`${res.status}. Something went wrong!`);
-  const data = await res.json();
-  // console.log(data);
+	const res = await fetch('https://duckpond-89zn.onrender.com/wild-ducks', {
+		signal: abortCont.signal
+	});
+	if (!res.ok) throw new Error(`${res.status}. Something went wrong!`);
+	const data = await res.json();
+	// console.log(data);
 
-  return data;
+	return data;
 };
 
 export { getAllDucks };
+```
+
+## Adding loading and error states
+
+- Since a network request is async, we can render some fallback UI while it's still loading. We can also show some UI in case of error by creating an error state
+
+### Loading state
+
+- We set the loading state to true when we run the effect, and we set the default to true so we don't get a flash of something when the page first loads
+
+```js
+const [loading, setLoading] = useState(true);
+async () => {
+	setLoading(true);
+};
+```
+
+- Then, whether or not an error occurred, we set loading to false with the `finally` block
+
+```js
+finally {
+				setLoading(false);
+			}
+```
+
+- We pass our loading sate as props, then use it in `DuckPond`
+- Then we conditionally render a (now simple) loading screen, but this could later be a spinner or something better
+
+```js
+const DuckPond = ({ ducks, loading }) => {
+	return (
+		<section id='pond' className='flex justify-center flex-wrap gap-4 p-4 w-full'>
+			{loading && <p className='text-center text-gray-600 font-medium'>Loading...</p>}
+			{!loading && ducks.map(duck => <DuckCard key={duck._id} {...duck} />)}
+		</section>
+	);
+};
+```
+
+- We can use the `sleep` function to simulate a slow network request
+
+```js
+const sleep = ms => new Promise(res => setTimeout(res, ms));
+
+await sleep(2000);
+```
+
+### Error state
+
+- We set our initial state to null, since there is no error. And reset the error when the effect runs
+
+```js
+const [error, setError] = useState(null);
+
+setLoading(true);
+setError(null);
+```
+
+- If we land in the catch block, we set the error
+
+```js
+catch (error) {
+				if (error.name === 'AbortError') {
+					console.info('Fetch aborted');
+				} else {
+					console.error(error);
+					setError('Error bringing ducks to the pond');
+				}
+			}
+```
+
+- Pass it via props and conditonally render
+
+```js
+const DuckPond = ({ ducks, loading, error }) => {
+	return (
+		<section id='pond' className='flex justify-center flex-wrap gap-4 p-4 w-full'>
+			{loading && <p className='text-center font-medium'>Loading...</p>}
+			{error && <p className='text-center text-red-500 font-semibold'>{error}</p>}
+			{!loading && !error && ducks.map(duck => <DuckCard key={duck._id} {...duck} />)}
+		</section>
+	);
+};
 ```
 
 ## This will be your most common use case for useEffect. useEffect should be used sparingly. Before you use it ask yourself
@@ -155,3 +238,7 @@ export { getAllDucks };
    - If the answer is no, use state to update the UI
 2. Is this update based on user input or action?
    - If the answer is yes, make the fetch request, or whatever logic is needed, inside of an event handler.
+
+```
+
+```
