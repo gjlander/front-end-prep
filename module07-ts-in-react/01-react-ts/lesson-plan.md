@@ -258,10 +258,10 @@ export type AuthContextType = {
 };
 ```
 
-- Import it, and use it to type `createContext`. Since it will be undefined to start, we can explicitly pass that as the starting value
+- Import it, and use it to type `createContext`. Since we have no default value to set, we use `null`
 
 ```ts
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextType | null>(null);
 ```
 
 - `useAuth` now correctly infers the type, but for the sake of being thorough we can explicitly type it
@@ -269,7 +269,8 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 ```ts
 const useAuth = () => {
 	const context = use(AuthContext);
-	if (!context) throw new Error('useAuth must be used within an AuthContextProvider');
+	if (!context)
+		throw new Error('useAuth must be used within an AuthContextProvider');
 	return context;
 };
 ```
@@ -364,13 +365,19 @@ type ActionResult = {
 	success: boolean;
 };
 
-const submitAction = async (_: ActionResult, formData: FormData): Promise<ActionResult> => {};
+const submitAction = async (
+	_: ActionResult,
+	formData: FormData
+): Promise<ActionResult> => {};
 ```
 
 - From experimentation, there seems to be a bug when using generic syntax with `useActionState`, so we can set the initial state with type casting
 
 ```ts
-const [state, formAction, isPending] = useActionState(submitAction, { error: null, success: false } as ActionResult);
+const [state, formAction, isPending] = useActionState(submitAction, {
+	error: null,
+	success: false
+} as ActionResult);
 ```
 
 ### SignIn
@@ -430,7 +437,10 @@ export type SignInActionResult = ActionResult<SignInErrors>;
 ```ts
 import type { DuckInput, DuckActionResult } from '../../types';
 
-const submitAction = async (_: DuckActionResult, formData: FormData): Promise<DuckActionResult> => {};
+const submitAction = async (
+	_: DuckActionResult,
+	formData: FormData
+): Promise<DuckActionResult> => {};
 
 const [state, formAction, isPending] = useActionState(submitAction, {
 	error: null,
@@ -443,7 +453,10 @@ const [state, formAction, isPending] = useActionState(submitAction, {
 ```ts
 import type { SignInInput, SignInActionResult } from '../types';
 
-const signinAction = async (_: SignInActionResult, formData: FormData): Promise<SignInActionResult> => {};
+const signinAction = async (
+	_: SignInActionResult,
+	formData: FormData
+): Promise<SignInActionResult> => {};
 
 const [state, formAction, isPending] = useActionState(signinAction, {
 	error: null,
@@ -458,7 +471,8 @@ const [state, formAction, isPending] = useActionState(signinAction, {
 `Navbar.tsx`
 
 ```ts
-const showActive = ({ isActive }: { isActive: boolean }) => (isActive ? 'menu-active' : '');
+const showActive = ({ isActive }: { isActive: boolean }) =>
+	isActive ? 'menu-active' : '';
 ```
 
 `DuckProvider.tsx`

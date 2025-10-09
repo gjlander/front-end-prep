@@ -3,7 +3,7 @@ import { createContext, use } from 'react';
 import DuckProvider from './DuckProvider';
 import AuthProvider from './AuthProvider';
 
-const DuckContext = createContext<DuckContextType | undefined>(undefined);
+const DuckContext = createContext<DuckContextType | null>(null);
 
 const useDucks = (): DuckContextType => {
 	const context = use(DuckContext);
@@ -11,12 +11,20 @@ const useDucks = (): DuckContextType => {
 	return context;
 };
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextType | null>(null);
 
-const useAuth = () => {
+const useAuth = (): AuthContextType => {
 	const context = use(AuthContext);
-	if (!context) throw new Error('useAuth must be used within an AuthContextProvider');
+	if (!context)
+		throw new Error('useAuth must be used within an AuthContextProvider');
 	return context;
 };
 
-export { DuckContext, useDucks, DuckProvider, AuthContext, useAuth, AuthProvider };
+export {
+	DuckContext,
+	useDucks,
+	DuckProvider,
+	AuthContext,
+	useAuth,
+	AuthProvider
+};

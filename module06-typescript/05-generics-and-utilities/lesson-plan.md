@@ -51,9 +51,9 @@ const stringArray: Array<string> = ['1', '2', '3'];
 
 ```ts
 const fetchData = async (url: string) => {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error('Fetch failed');
-  return res.json();
+	const res = await fetch(url);
+	if (!res.ok) throw new Error('Fetch failed');
+	return res.json();
 };
 ```
 
@@ -63,23 +63,27 @@ const fetchData = async (url: string) => {
 
 ```ts
 const fetchData = async <T>(url: string): Promise<T> => {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error('Fetch failed');
-  return res.json();
+	const res = await fetch(url);
+	if (!res.ok) throw new Error('Fetch failed');
+	return res.json();
 };
 ```
 
 - Then, when we call it, in addition to passing arguments, we must also pass the type we want this to return
 
 ```ts
-const ducks = fetchData<Duck[]>('https://duckpond-89zn.onrender.com/wild-ducks');
+const ducks = fetchData<Duck[]>(
+	'https://duckpond-89zn.onrender.com/wild-ducks'
+);
 ```
 
 - And if we await it, TS knows this is no longer a promise, but our ducks array
   - note that this is still a case of _"Hey, trust me bro"_ we have to make sure our type matches what the API actually gives us
 
 ```ts
-const ducks = await fetchData<Duck[]>('https://duckpond-89zn.onrender.com/wild-ducks');
+const ducks = await fetchData<Duck[]>(
+	'https://duckpond-89zn.onrender.com/wild-ducks'
+);
 ```
 
 ## Generic Types & Type Aliases
@@ -90,9 +94,9 @@ const ducks = await fetchData<Duck[]>('https://duckpond-89zn.onrender.com/wild-d
 
 ```ts
 const fetchData = async <T>(url: string, options?: RequestInit): Promise<T> => {
-  const res = await fetch(url, options && options);
-  if (!res.ok) throw new Error('Fetch failed');
-  return res.json();
+	const res = await fetch(url, options && options);
+	if (!res.ok) throw new Error('Fetch failed');
+	return res.json();
 };
 ```
 
@@ -100,15 +104,18 @@ const fetchData = async <T>(url: string, options?: RequestInit): Promise<T> => {
 
 ```ts
 const options = {
-  method: 'GET',
-  headers: {
-    accept: 'application/json',
-    Authorization:
-      'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2MWI1OTkzY2VjYTIwOTkwOWI5NWI0ODJmODVjNDlmMCIsIm5iZiI6MTcyNzcwNTE3Mi42NDA2NDMsInN1YiI6IjY2ZmFhZjAyM2EwZjVhMDhjOGYxOGYzMCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.JILLUNBjQwItAiLtLcP4FdjW4st_bKAdMsGxw253X-0'
-  }
+	method: 'GET',
+	headers: {
+		accept: 'application/json',
+		Authorization:
+			'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2MWI1OTkzY2VjYTIwOTkwOWI5NWI0ODJmODVjNDlmMCIsIm5iZiI6MTcyNzcwNTE3Mi42NDA2NDMsInN1YiI6IjY2ZmFhZjAyM2EwZjVhMDhjOGYxOGYzMCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.JILLUNBjQwItAiLtLcP4FdjW4st_bKAdMsGxw253X-0'
+	}
 };
 
-const tmdbResponse = await fetchData('https://api.themoviedb.org/3/movie/popular?language=en-US&page=1', options);
+const tmdbResponse = await fetchData(
+	'https://api.themoviedb.org/3/movie/popular?language=en-US&page=1',
+	options
+);
 console.log(tmdbResponse);
 ```
 
@@ -116,10 +123,10 @@ console.log(tmdbResponse);
 
 ```ts
 type ApiResponse = {
-  page: number;
-  results: any[];
-  total_pages: number;
-  total_results: number;
+	page: number;
+	results: any[];
+	total_pages: number;
+	total_results: number;
 };
 ```
 
@@ -127,9 +134,9 @@ type ApiResponse = {
 
 ```ts
 type Movie = {
-  original_title: string;
-  poster_path: string;
-  id: number;
+	original_title: string;
+	poster_path: string;
+	id: number;
 };
 ```
 
@@ -137,8 +144,8 @@ type Movie = {
 
 ```ts
 const tmdbResponse: ApiResponse = await fetchData(
-  'https://api.themoviedb.org/3/movie/popular?language=en-US&page=1',
-  options
+	'https://api.themoviedb.org/3/movie/popular?language=en-US&page=1',
+	options
 );
 ```
 
@@ -146,15 +153,15 @@ const tmdbResponse: ApiResponse = await fetchData(
 
 ```ts
 type ApiResponse<T> = {
-  page: number;
-  results: T[];
-  total_pages: number;
-  total_results: number;
+	page: number;
+	results: T[];
+	total_pages: number;
+	total_results: number;
 };
 
 const tmdbResponse: ApiResponse<Movie> = await fetchData(
-  'https://api.themoviedb.org/3/movie/popular?language=en-US&page=1',
-  options
+	'https://api.themoviedb.org/3/movie/popular?language=en-US&page=1',
+	options
 );
 ```
 
@@ -169,11 +176,11 @@ const tmdbResponse: ApiResponse<Movie> = await fetchData(
 
 ```ts
 type LengthWise = {
-  length: number;
+	length: number;
 };
 
 const logLength = <T extends LengthWise>(value: T) => {
-  console.log(value.length);
+	console.log(value.length);
 };
 
 // logLength(4);
@@ -182,7 +189,7 @@ logLength([1, 2, 3, 4]);
 logLength({ name: 'Sally', length: 3 });
 ```
 
-### Default values
+### Default Types
 
 - Go over LMS example
 
@@ -213,8 +220,8 @@ const makeTupleArray = <T>(obj: T) => Object.entries(obj);
 const makeTupleArray = <T extends {}>(obj: T) => Object.entries(obj);
 
 const object = {
-  a: 'some string',
-  b: 42
+	a: 'some string',
+	b: 42
 };
 
 console.log(makeTupleArray(object));
@@ -236,8 +243,8 @@ console.log(makeTupleArray(undefined));
 const makeTupleArray = <T extends object>(obj: T) => Object.entries(obj);
 
 const object = {
-  a: 'some string',
-  b: 42
+	a: 'some string',
+	b: 42
 };
 
 console.log(makeTupleArray(object));
@@ -250,8 +257,8 @@ console.log(makeTupleArray(42));
 
 ```ts
 type SomeObject = {
-  a: string;
-  b: number;
+	a: string;
+	b: number;
 };
 
 type SomeObjectKeys = keyof SomeObject;

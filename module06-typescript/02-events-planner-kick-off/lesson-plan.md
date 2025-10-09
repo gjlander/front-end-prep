@@ -32,11 +32,16 @@
 
 ## HTTP Methods
 
+- Thus far, you've been working with 3rd party APIs that only grant read access. For full CRUD operations with persistence, we've been relying on local storage. While you'll eventually be building your own RESTful APIs, we want you to have a chance to experience full CRUD on the frontend, so we've built an API for you to run with the events scheduler
+
+- Before we look at the Events API you'll be working with, let's do a more general recap on HTTP methods
+
 ### GET
 
 - This is mainly what we've been working with so far
 - Any URL put in the browser is making a GET request, so we could put our endpoints there to see what the response will be.
 - Demo with DuckPond `https://duckpond-89zn.onrender.com/ducks/`
+  - Note these have an owner property, they are not wild ducks
 
 #### In order to use any other method, we'd have to write JS for it, and potentially build a UI. For testing and debugging this might not be practical. Luckily, the Events API has useful documentation with swagger, but a more general solution is...
 
@@ -109,22 +114,13 @@
 
 - Delete requests don't need anything in the body of the request
 
-## Introduction to [API for group project](https://learn.wbscodingschool.com/courses/full-stack-web-app/lessons/%f0%9f%9b%a0%ef%b8%8f-event-scheduler/)
+## Introduction to [API for group project](https://learn.wbscodingschool.com/courses/full-stack-web-app/lessons/module-project-event-scheduler/topic/%f0%9f%9b%a0%ef%b8%8f-project-guidelines-and-requirements-6/)
 
 - Demo running locally to show documentation
 - Play around with it in Postman
 - Has useful doc with swagger, but wanted to show postman already since we'll be using it in the backend
 
 # Frontend Auth Flow
-
-# Events API Kick-off
-
-## Points to cover
-
-- Fetch options
-- Authentication/Authorization
-- - Signing in and saving a token
-- - Protecting routes
 
 #### Let's see what this would look like in the frontend now
 
@@ -137,7 +133,7 @@
 - I added `SignIn` and `NotFound` pages. The \* for the `NotFound` path acts as a wildcard, so basically anything that isn't a defined path will use that
 - Show what the pages look like
   - Sign In button is now a Link to signin page
-  - handleSignOut has been simplified
+  - handleSignOut is now coming from our Auth Context, as well as the `signedIn` state
 
 ### MainLayout.jsx
 
@@ -191,11 +187,19 @@ const AuthContext = createContext();
 
 const useAuth = () => {
 	const context = use(AuthContext);
-	if (!context) throw new Error('useAuth must be used within an AuthContextProvider');
+	if (!context)
+		throw new Error('useAuth must be used within an AuthContextProvider');
 	return context;
 };
 
-export { DuckContext, useDucks, DuckProvider, AuthContext, useAuth, AuthProvider };
+export {
+	DuckContext,
+	useDucks,
+	DuckProvider,
+	AuthContext,
+	useAuth,
+	AuthProvider
+};
 ```
 
 ### AuthProvider.jsx
@@ -212,6 +216,7 @@ export { DuckContext, useDucks, DuckProvider, AuthContext, useAuth, AuthProvider
 
 - We destructure directly in the form state (remember this is just to prevent the form from resetting if there's an error)
 - We have an action that looks very similar to what we made for a new duck
+- We call `handleSignIn` to set `signedIn` to `true`
 
 ## Sign In - from Postman to Frontend
 
@@ -309,7 +314,7 @@ const signinAction = async (prevState, formData) => {
 
 - Our first step is to save the token in local storage, so that if the user came back to our site later they would stay signed in (because the token is a string, we don't need to stringify)
 - We also update our signed in state, and tell the app we need to check the session again
-- Let's create a function in `AuthProvider.jsx` to handle those 3 things, and then pass it to our context
+- Let's update `handleSignIn` to save the token and set checkSession to true
 
 ```js
 const handleSignIn = token => {
@@ -319,13 +324,7 @@ const handleSignIn = token => {
 };
 ```
 
-- We need to import `useAuth` and destructure our `handleSignIn` function
-
-```js
-import { useAuth } from '../context';
-// other stuff...
-const { signedIn, handleSignIn } = useAuth();
-```
+- We now need to pass the token we get back from `signIn`
 
 ```js
 //in signinAction
@@ -397,12 +396,6 @@ const handleSignOut = () => {
 	setSignedIn(false);
 	setUser(null);
 };
-```
-
-- Then destructure and call in `Navbar.jsx`
-
-```js
-const { signedIn, handleSignOut } = useAuth();
 ```
 
 ## Protected Routes
