@@ -54,7 +54,7 @@ type Todo = {
 	completed: false;
 };
 
-const data = (await res.json()) as Todo[];
+const data = (await res.json()) as Todo;
 ```
 
 - We can use this to type our state, and get autocomplete, etc
@@ -285,10 +285,16 @@ const getAllDucks = async (abortCont: AbortController) => {
 - Now even if we remove the return type annotation, TS can infer it. And we get a runtime validation check, so even once TS is gone, and this is transpiled to JS our code is still safe
 
 ```ts
-const getDuckById = async (id: string, abortCont: AbortController): Promise<Duck> => {
-	const res = await fetch(`https://duckpond-89zn.onrender.com/wild-ducks/${id}`, {
-		signal: abortCont.signal
-	});
+const getDuckById = async (
+	id: string,
+	abortCont: AbortController
+): Promise<Duck> => {
+	const res = await fetch(
+		`https://duckpond-89zn.onrender.com/wild-ducks/${id}`,
+		{
+			signal: abortCont.signal
+		}
+	);
 	if (!res.ok) throw new Error(`${res.status}. Something went wrong!`);
 
 	const dataRes = await res.json();
@@ -339,7 +345,13 @@ export const UserSchema = z.object({
 - Infer types from them
 
 ```ts
-import type { DuckInputSchema, DuckSchema, DuckSchemaArray, SignInResSchema, UserSchema } from '../schemas';
+import type {
+	DuckInputSchema,
+	DuckSchema,
+	DuckSchemaArray,
+	SignInResSchema,
+	UserSchema
+} from '../schemas';
 
 export type SignInRes = z.infer<typeof SignInResSchema>;
 
